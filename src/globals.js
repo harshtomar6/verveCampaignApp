@@ -1,4 +1,5 @@
 module.exports = {
+  recentActivity: [],
   volunteerList : [],
   primaryColor: '#0B8457',
   primaryColorDark: '#096C47',

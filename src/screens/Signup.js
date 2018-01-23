@@ -67,6 +67,18 @@ export default class Signup extends React.Component {
 
           AsyncStorage.setItem('userType', 'Volunteer')
           this.props.navigation.dispatch(moveToVolunteer);
+          fetch(config.SERVER_URI+'/addRecentActivity', {
+            method: 'post',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({type: 'REGISTER', owner: this.state.name})
+          })
+            .then(res => {
+              if(!res.ok)
+                console.log('Error logging');
+            })
+            .catch(res => {
+              console.log('Error logging');
+            })
         })
         .catch(err => {
           this.setState({isLoading: false})

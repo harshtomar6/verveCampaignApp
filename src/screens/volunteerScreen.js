@@ -63,7 +63,8 @@ export default class VolunteerScreen extends React.Component {
   render(){
     return (
       <Container>
-        <AppBar title={this.state.appBarTitle} icon={this.state.icon} left='none' />
+        <AppBar title={this.state.appBarTitle} icon={this.state.icon} left='none'
+          navigation={this.props.navigation} />
         <Content>
 
         </Content>
