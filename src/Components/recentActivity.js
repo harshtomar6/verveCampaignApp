@@ -1,12 +1,11 @@
 import React from 'react';
-import { View, StyleSheet, AsyncStorage } from 'react-native';
-import {List, ListItem, Text, Body, Right, Icon, Spinner, Toast,
-  Left, Thumbnail } from 'native-base';
-const config = require('./../config');
+import { View, StyleSheet } from 'react-native';
+import { List, ListItem, Text, Spinner, Left, Body, Right,
+  Thumbnail, Icon, Toast } from 'native-base';
 let GLOBALS = require('./../globals');
+let config = require('./../config');
 
-export default class Volunteers extends React.Component {
-
+export default class RecentActivity extends React.Component {
   constructor(){
     super();
     this.state = {
@@ -17,13 +16,12 @@ export default class Volunteers extends React.Component {
 
   componentWillMount(){
 
-    if(GLOBALS.volunteerList.length > 0){
-      this.setState({data: GLOBALS.volunteerList})
-      this.props.isLoading(false)
+    if(GLOBALS.recentActivityFull.length > 0){
+      this.setState({data: GLOBALS.recentActivityFull})
     }
     else{
       this.setState({isLoading: true})
-      fetch(config.SERVER_URI+'/getVolunteers')
+      fetch(config.SERVER_URI+'/getAllRecentActivity')
         .then(res => {
           this.setState({isLoading: false})
           if(!res.ok)
@@ -36,9 +34,8 @@ export default class Volunteers extends React.Component {
                  backgroundColor: GLOBALS.primaryErrColor
               }
             })
-          GLOBALS.volunteerList = JSON.parse(res._bodyText).data
+          GLOBALS.recentActivityFull = JSON.parse(res._bodyText).data
           this.setState({data: JSON.parse(res._bodyText).data})
-          this.props.isLoading(false)
         })
         .catch(err => {
           this.setState({isLoading: false})
@@ -55,18 +52,34 @@ export default class Volunteers extends React.Component {
     }
   }
 
-  categorizeList(name){
-    let dividerLabel = name[0];
+  getRecentActivityIcon(type){
+    let icon = '';
 
+    switch(type){
+      case 'REGISTER':
+        icon = require('./../volunteer-thumbnail.png');
+        break;
+      case 'PASS_SOLD':
+        icon = require('./../dollarIcon.png');
+        break;
+      case 'LOGIN':
+        icon = require('./../login.png');
+        break;
+      case 'LOGOUT':
+        icon = require('./../logout.png');
+        break;
+      default:
+        icon = '';
+    }
 
+    return icon;
   }
 
-  handlePress(volunteerId, volunteerName, passesSold){
+  handlePress(volunteerId, volunteerName){
     const { navigate } = this.props.navigation;
     navigate('volunteerDetails', {
       volunteerId,
-      volunteerName,
-      passesSold
+      volunteerName
     })
   }
 
@@ -78,13 +91,15 @@ export default class Volunteers extends React.Component {
         <List dataArray={this.state.data}
           renderRow={item => 
             <ListItem button avatar 
-              onPress={() => this.handlePress(item._id, item.name, item.passesSold)}>
+              onPress={() => this.handlePress(item.owner.id, item.owner.name)}>
               <Left>
-                <Thumbnail style={{width: 45, height: 45}} source={require('./../volunteer-thumbnail.png')} />
+                <Thumbnail style={{width: 45, height: 45}} source={this.getRecentActivityIcon(item.type)} />
               </Left>
               <Body>
-                <Text>{item.name}</Text>
-                <Text note>Passes Sold: {item.passesSold}</Text>
+                <Text>{item.description}</Text>
+                <Text note>{new Date(item.time).toDateString()},&nbsp; 
+                  {new Date(item.time).toTimeString().split('GMT')[0]}
+                </Text>
               </Body>
               <Right>
                 <Icon name="arrow-forward"></Icon>
@@ -94,7 +109,6 @@ export default class Volunteers extends React.Component {
       </View>
     );
   }
-
 }
 
 const styles = StyleSheet.create({
@@ -102,4 +116,4 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff'
   }
-})
+});

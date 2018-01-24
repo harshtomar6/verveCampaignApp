@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Text, Card, CardItem, Spinner, List, ListItem } from 'native-base';
+import { View, StyleSheet, Image } from 'react-native';
+import { Text, Card, CardItem, Spinner, List, ListItem, Left, Thumbnail,
+  Body, Right, Icon, Label } from 'native-base';
 let GLOBALS = require('./../globals');
 const config = require('./../config');
 
@@ -9,22 +10,22 @@ export default class AdminHome extends React.Component {
   constructor(){
     super();
     this.state = {
-      recentActivity: [],
+      data: [],
       isLoading: false
     };
   }
 
   componentWillMount(){
-    if(GLOBALS.recentActivity.length > 0){
-      this.setState({recentActivity: GLOBALS.recentActivity})
+    if(GLOBALS.recentActivity.hasOwnProperty('summary')){
+      this.setState({data: GLOBALS.recentActivity})
       //this.props.isLoading(false)
     }
     else{
       this.setState({isLoading: true})
-      fetch(config.SERVER_URI+'/getRecentActivity')
+      fetch(config.SERVER_URI+'/getHomeData')
         .then(res => {
-          this.setState({isLoading: false})
-          if(!res.ok)
+          if(!res.ok){
+            this.setState({isLoading: false})
             return Toast.show({
               text: JSON.parse(res._bodyText).err,
               position: 'bottom',
@@ -34,8 +35,11 @@ export default class AdminHome extends React.Component {
                  backgroundColor: GLOBALS.primaryErrColor
               }
             })
+          }
           GLOBALS.recentActivity = JSON.parse(res._bodyText).data
-          this.setState({recentActivity: JSON.parse(res._bodyText).data})
+          this.setState({data: JSON.parse(res._bodyText).data}, () => {
+            this.setState({isLoading: false})
+          })
           //this.props.isLoading(false)
         })
         .catch(err => {
@@ -53,24 +57,87 @@ export default class AdminHome extends React.Component {
     }
   }
 
+  getRecentActivityIcon(type){
+    let icon = '';
+
+    switch(type){
+      case 'REGISTER':
+        icon = require('./../volunteer-thumbnail.png');
+        break;
+      case 'PASS_SOLD':
+        icon = require('./../dollarIcon.png');
+        break;
+      case 'LOGIN':
+        icon = require('./../login.png');
+        break;
+      case 'LOGOUT':
+        icon = require('./../logout.png');
+        break;
+      default:
+        icon = '';
+    }
+
+    return icon;
+  }
+
+  activityPress(volunteerId, volunteerName, passesSold){
+    const { navigate } = this.props.navigation;
+    navigate('volunteerDetails', {
+      volunteerId,
+      volunteerName,
+      passesSold
+    })
+  }
+
   render(){
+
+    let summary = this.state.isLoading ? <Spinner color={GLOBALS.primaryColorDark} /> :
+      <Body>
+        <Label>Total Passes Alloted</Label>
+        <Text style={styles.info}>{this.state.data.summary.totalPassesAlloted}</Text>
+        <Label>Total Passes Sold</Label>
+        <Text style={styles.info}>{this.state.data.summary.totalPassesSold}</Text>
+        <Label>Total Volunteers Registered</Label>
+        <Text style={styles.info}>{this.state.data.summary.totalVolunteersRegistered}</Text>
+      </Body>
+
     let recentActivity = this.state.isLoading ? <Spinner color={GLOBALS.primaryColorDark} />: 
-      <List dataArray={this.state.recentActivity}
+      <List dataArray={this.state.data.recentActivity}
         renderRow={(item) => 
-          <ListItem>
-            <Text>{item.description}</Text>
+          <ListItem button avatar
+            onPress={() => this.activityPress(item.owner.id, item.owner.name)}>
+            <Left>
+              <Thumbnail style={{width: 45, height: 45}} source={this.getRecentActivityIcon(item.type)} />
+            </Left>
+            <Body>
+              <Text>{item.description}</Text>
+              <Text note>{new Date(item.time).toDateString()},&nbsp; 
+                {new Date(item.time).toTimeString().split('GMT')[0]}
+              </Text>
+            </Body>
+            <Right>
+              <Icon name="arrow-forward" />
+            </Right>
           </ListItem>
         }></List>
     return (
       <View style={styles.container}>
+        <View style={styles.banner}>
+          <Text style={styles.bannerText}>
+            Passes Sold
+          </Text>
+        </View>
         <Card>
           <CardItem header>
             <Text style={{color: GLOBALS.primaryColorDark}}>SUMMARY</Text>
           </CardItem>
+          <CardItem>
+            {summary}
+          </CardItem>
         </Card>
         <Card>
           <CardItem header>
-            <Text style={{color: GLOBALS.primaryColorDark}}>Recent Activity</Text>
+            <Text style={{color: GLOBALS.primaryColorDark}}>RECENT ACTIVITY</Text>
           </CardItem>
           <CardItem>
             {recentActivity}
@@ -84,5 +151,22 @@ export default class AdminHome extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1
+  },
+  banner: {
+    alignItems: 'center',
+    paddingTop: 70,
+    paddingBottom: 70,
+    backgroundColor: GLOBALS.primaryColor
+  },
+  bannerText: {
+    fontSize: 22,
+    color: '#fff',
+    fontWeight: '800'
+  },
+  info: {
+    fontSize: 18,
+    margin: 10,
+    color: GLOBALS.primaryColorDark,
+    fontWeight: '600'
   }
 })

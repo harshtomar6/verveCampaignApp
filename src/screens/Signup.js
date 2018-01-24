@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StatusBar, StyleSheet, Image, AsyncStorage } from 'react-native';
 import { Container, Icon, Button, Input, Item, Form, Text,
-  Toast, Spinner, Content } from 'native-base';
+  Toast, Spinner, Content, ActionSheet } from 'native-base';
 import { NavigationActions } from 'react-navigation';
 const remote = require('./../login-back.jpg');
 const config = require('./../config.js');
@@ -26,6 +26,7 @@ export default class Signup extends React.Component {
 
   componentWillUnmount() { 
     Toast.toastInstance = null;
+    ActionSheet.actionsheetInstance = null;
   }
 
   handleSubmit(){
@@ -70,7 +71,13 @@ export default class Signup extends React.Component {
           fetch(config.SERVER_URI+'/addRecentActivity', {
             method: 'post',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({type: 'REGISTER', owner: this.state.name})
+            body: JSON.stringify({
+              type: 'REGISTER', 
+              owner: {
+                id: JSON.parse(res._bodyText).data._id,
+                name: this.state.name
+              }
+            })
           })
             .then(res => {
               if(!res.ok)

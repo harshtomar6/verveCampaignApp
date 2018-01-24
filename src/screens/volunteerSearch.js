@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Container, Header, Content, Text, Left, Button,
-  Icon, Item, Input, Body, Form, List, ListItem, Right } from 'native-base';
+  Icon, Item, Input, Body, Form, List, ListItem, Right, Thumbnail } from 'native-base';
 const GLOBALS = require('./../globals');
 
 export default class VolunteerSearch extends React.Component {
@@ -77,10 +77,14 @@ export default class VolunteerSearch extends React.Component {
           <View style={{backgroundColor:'#fff'}}>
           <List dataArray={this.state.searchResult}
           renderRow={item => 
-            <ListItem button onPress={() => this.handlePress(item._id, item.name, item.passesSold)}>
+            <ListItem button avatar
+              onPress={() => this.handlePress(item._id, item.name, item.passesSold)}>
+              <Left>
+                <Thumbnail source={require('./../volunteer-thumbnail.png')} />
+              </Left>
               <Body>
-              <Text>{item.name}</Text>
-              <Text note>Passes Sold: {item.passesSold}</Text>
+                <Text>{item.name}</Text>
+                <Text note>Passes Sold: {item.passesSold}</Text>
               </Body>
               <Right>
                 <Icon name="arrow-forward"></Icon>

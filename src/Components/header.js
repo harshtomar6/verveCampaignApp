@@ -15,6 +15,7 @@ import {
 } from 'native-base';
 import { NavigationActions } from 'react-navigation';
 let GLOBALS = require('./../globals');
+let config = require('./../config');
 
 export default class AppBar extends React.Component{
   
@@ -49,6 +50,28 @@ export default class AppBar extends React.Component{
         if(buttonIndex == 0){
           AsyncStorage.removeItem('userType');
           this.props.navigation.dispatch(removeFromStack);
+          AsyncStorage.getItem('userData').then(val => {
+            if(val)
+              fetch(config.SERVER_URI+'/addRecentActivity', {
+                method: 'post',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                  type: 'LOGOUT', 
+                  owner: {
+                    id: JSON.parse(val)._id,
+                    name: JSON.parse(val).name
+                  }
+                })
+              })
+                .then(res => {
+                  if(!res.ok)
+                    console.log('Error logging');
+                  AsyncStorage.removeItem('userData');
+                })
+                .catch(res => {
+                  console.log('Error logging');
+                })
+          }).done();
         }
       })
     

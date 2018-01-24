@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StackNavigator } from 'react-navigation';
 import { AsyncStorage } from 'react-native'
-import { Root } from 'native-base';
+import { Root, Toast, ActionSheet } from 'native-base';
 import HomeScreen from './src/screens/homeScreen';
 import Login from './src/screens/Login';
 import Signup from './src/screens/Signup';
@@ -28,7 +28,8 @@ const RootNavigator = StackNavigator({
 export default class App extends Component {
 
   componentWillUnmount(){
-    AsyncStorage.removeItem('volunteerList');
+    Toast.toastInstance = null;
+    ActionSheet.actionsheetInstance = null;
   }
 
   render() {

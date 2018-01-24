@@ -8,7 +8,8 @@ import {
   Text,
   Footer,
   Spinner,
-  FooterTab
+  FooterTab,
+  Toast, ActionSheet
 } from 'native-base';
 import AppBar from './../Components/header';
 let GLOBALS = require('./../globals');
@@ -22,6 +23,11 @@ export default class VolunteerScreen extends React.Component {
       tabs: [styles.active, styles.inactive, styles.inactive, styles.inactive],
       icon: 'more'
     }
+  }
+
+  componentWillUnmount(){
+    Toast.toastInstance = null;
+    ActionSheet.actionsheetInstance = null;
   }
 
   _handleTabTouch(e){

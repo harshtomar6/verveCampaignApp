@@ -1,6 +1,7 @@
 module.exports = {
-  recentActivity: [],
+  recentActivity: {},
   volunteerList : [],
+  recentActivityFull: [],
   primaryColor: '#0B8457',
   primaryColorDark: '#096C47',
   primaryErrColor: '#dc3545',

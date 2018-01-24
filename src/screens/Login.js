@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StatusBar, StyleSheet, Image, AsyncStorage } from 'react-native';
 import { Container, Icon, Button, Input, Item, Form, Text,
-  Toast, Spinner } from 'native-base';
+  Toast, Spinner, ActionSheet } from 'native-base';
 import { NavigationActions } from 'react-navigation';
 const remote = require('./../login-back.jpg');
 const config = require('./../config.js');
@@ -22,6 +22,7 @@ export default class Login extends React.Component {
 
   componentWillUnmount() { 
     Toast.toastInstance = null;
+    ActionSheet.actionsheetInstance = null;
   }
 
   handleSubmit(){
@@ -82,12 +83,19 @@ export default class Login extends React.Component {
             })
           }
           
-          AsyncStorage.setItem('userType', 'Volunteer')
+          AsyncStorage.setItem('userType', 'Volunteer');
+          AsyncStorage.setItem('userData', JSON.stringify(JSON.parse(res._bodyText).data))
           this.props.navigation.dispatch(moveToVolunteer);
           fetch(config.SERVER_URI+'/addRecentActivity', {
             method: 'post',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({type: 'LOGIN', owner: this.state.username})
+            body: JSON.stringify({
+              type: 'LOGIN', 
+              owner: {
+                id: JSON.parse(res._bodyText).data._id,
+                name: JSON.parse(res._bodyText).data.name
+              }
+            })
           })
             .then(res => {
               if(!res.ok)

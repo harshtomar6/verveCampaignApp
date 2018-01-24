@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Alert, Linking, Modal } from 'react-native';
 import { Container, Icon, Right, Body, Content, Card,
    Text, CardItem, Spinner, Toast, Button, Form,
-   Item, Label, Input } from 'native-base';
+   Item, Label, Input, ActionSheet } from 'native-base';
 import AppBar from './../Components/header';
 const config = require('./../config');
 let GLOBALS = require('./../globals');
@@ -65,6 +65,11 @@ export default class VolunteerDetails extends React.Component {
       })
   }
 
+  componentWillUnmount(){
+    Toast.toastInstance = null;
+    ActionSheet.actionsheetInstance = null;
+  }
+
   callNumber(phoneNumber){
     Linking.canOpenURL(phoneNumber).then(supported => {
       if(!supported)
@@ -84,6 +89,52 @@ export default class VolunteerDetails extends React.Component {
       ],
       { cancelable: false }
     )
+  }
+
+  handleReset(){
+    Alert.alert(
+      'Reset Alloted Passes',
+      'Are You Sure ? ',
+      [
+        {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+        {text: 'OK', onPress: () => this.resetPasses},
+      ],
+      { cancelable: false }
+    )
+  }
+
+  resetPasses(){
+    fetch(config.SERVER_URI+'/deallotPasses', {
+      method: 'post',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({id: this.state.volunteerId})
+    })
+      .then(res => {
+        this.setState({isLoading: false})
+        if(!res.ok)
+          return Toast.show({
+            text: JSON.parse(res._bodyText).err,
+            position: 'bottom',
+            buttonText: 'Okay',
+            duration: 3000,
+            style: {
+              backgroundColor: GLOBALS.primaryErrColor
+            }
+          })
+          //this.props.isLoading(false)
+      })
+      .catch(err => {
+        this.setState({isLoading: false})
+        Toast.show({
+          text: 'An Error Occured !',
+          position: 'bottom',
+          buttonText: 'Okay',
+          duration: 3000,
+          style: {
+            backgroundColor: GLOBALS.primaryErrColor
+          }
+        })
+      })
   }
 
   blockVolunteer(){
@@ -255,7 +306,9 @@ export default class VolunteerDetails extends React.Component {
         
         <Content>
           <View style={styles.banner}>
-            <Text style={styles.bannerText}>{params.passesSold} Passes Sold</Text>
+            <Text style={styles.bannerText}>
+              {params.passesSold >= 0 ? params.passesSold : this.state.isLoading ? '-' : this.state.data.passesSold } 
+                &nbsp;Passes Sold</Text>
             <Text style={{color: '#fff'}}>
               {this.state.isLoading ? '-': this.state.data.passesAlloted} Passes Alloted
             </Text>
@@ -278,8 +331,8 @@ export default class VolunteerDetails extends React.Component {
             </CardItem>
             <CardItem>
               <Body>
-              <Button block primary onPress={this.handleDelete.bind(this)}>
-                <Text></Text>
+              <Button block primary onPress={this.handleReset.bind(this)}>
+                <Text>Reset Alloted Passes</Text>
               </Button>
               <Text></Text>
               <Button block danger onPress={this.handleDelete.bind(this)}>
