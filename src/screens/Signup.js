@@ -11,6 +11,7 @@ export default class Signup extends React.Component {
 
   constructor(){
     super();
+    this.toast = null;
     this.validateInputs = this.validateInputs.bind(this);
     this.state = {
       name: '',
@@ -55,41 +56,33 @@ export default class Signup extends React.Component {
         .then(res => {
           this.setState({isLoading: false})
           if(!res.ok){
-            return Toast.show({
-              text: JSON.parse(res._bodyText).err,
-              position: 'bottom',
-              buttonText: 'Okay',
-              duration: 3000,
-              style: {
-                backgroundColor: GLOBALS.primaryErrColor
-              }
-            })
+            if(this.toast !== null)
+              return this.toast._root.showToast({config: {
+                text: JSON.parse(res._bodyText).err,
+                position: 'bottom',
+                buttonText: 'Okay',
+                duration: 3000,
+                style: {
+                  backgroundColor: GLOBALS.primaryErrColor
+                }
+              }})
           }
 
           AsyncStorage.setItem('userType', 'Volunteer')
+          AsyncStorage.setItem('userData', JSON.stringify(JSON.parse(res._bodyText).data))
           this.props.navigation.dispatch(moveToVolunteer);
-          fetch(config.SERVER_URI+'/addRecentActivity', {
-            method: 'post',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-              type: 'REGISTER', 
-              owner: {
-                id: JSON.parse(res._bodyText).data._id,
-                name: this.state.name
-              }
-            })
+          GLOBALS.socket.emit('record-activity', {
+            type: 'REGISTER',
+            owner: {
+              id: JSON.parse(res._bodyText).data._id,
+              name: this.state.name
+            }
           })
-            .then(res => {
-              if(!res.ok)
-                console.log('Error logging');
-            })
-            .catch(res => {
-              console.log('Error logging');
-            })
         })
         .catch(err => {
           this.setState({isLoading: false})
-          Toast.show({
+          if(this.toast !== null)
+          return this.toast._root.showToast({config: {
             text: 'An Error Occured !',
             position: 'bottom',
             buttonText: 'Okay',
@@ -97,14 +90,15 @@ export default class Signup extends React.Component {
             style: {
               backgroundColor: GLOBALS.primaryErrColor
             }
-          })
+          }})
         })
     }
   }
 
   validateInputs(){
     if(this.state.name.length === 0)
-      return Toast.show({
+      if(this.toast !== null)
+      return this.toast._root.showToast({config: {
         text: 'Name cannot be left blank !',
         position: 'bottom',
         buttonText: 'Okay',
@@ -112,43 +106,47 @@ export default class Signup extends React.Component {
         style: {
           backgroundColor: GLOBALS.primaryErrColor
         }
-      })
+      }})
 
     if(this.state.usn.length !== 10)
-      return Toast.show({
-        text: 'USN must be 10 letters long !',
+      if(this.toast !== null)
+      return this.toast._root.showToast({config: {
+        text: 'USN must be of 10 letters !',
         position: 'bottom',
         buttonText: 'Okay',
         duration: 3000,
         style: {
           backgroundColor: GLOBALS.primaryErrColor
         }
-      })
+      }})
 
     if(!(this.state.usn.startsWith('1js') || this.state.usn.startsWith('1JS')))
-      return Toast.show({
-        text: 'Invalid USN !',
-        position: 'bottom',
-        buttonText: 'Okay',
-        duration: 3000,
-        style: {
-          backgroundColor: GLOBALS.primaryErrColor
-        }
-    })
+      if(this.toast !== null)
+        return this.toast._root.showToast({config: {
+          text: 'Invalid USN !',
+          position: 'bottom',
+          buttonText: 'Okay',
+          duration: 3000,
+          style: {
+            backgroundColor: GLOBALS.primaryErrColor
+          }
+        }})
     
     if(this.state.email.length === 0)
-      return Toast.show({
-        text: 'Email cannot be left blank !',
+      if(this.toast !== null)
+      return this.toast._root.showToast({config: {
+        text: 'E-mail cannot be left blank !',
         position: 'bottom',
         buttonText: 'Okay',
         duration: 3000,
         style: {
           backgroundColor: GLOBALS.primaryErrColor
         }
-      })
+      }})
     
     if(!(this.state.email.contains('@') && this.state.email.contains('.')) || this.state.email.contains('@.'))
-      return Toast.show({
+      if(this.toast !== null)
+      return this.toast._root.showToast({config: {
         text: 'Invalid E-mail !',
         position: 'bottom',
         buttonText: 'Okay',
@@ -156,10 +154,11 @@ export default class Signup extends React.Component {
         style: {
           backgroundColor: GLOBALS.primaryErrColor
         }
-      })
+      }})
     
     if(this.state.phone.length !== 10)
-      return Toast.show({
+      if(this.toast !== null)
+      return this.toast._root.showToast({config: {
         text: 'Phone should be of 10 digits !',
         position: 'bottom',
         buttonText: 'Okay',
@@ -167,10 +166,11 @@ export default class Signup extends React.Component {
         style: {
           backgroundColor: GLOBALS.primaryErrColor
         }
-      })
+      }})
 
     if(this.state.password.length === 0)
-      return Toast.show({
+      if(this.toast !== null)
+      return this.toast._root.showToast({config: {
         text: 'Password cannot be left blank !',
         position: 'bottom',
         buttonText: 'Okay',
@@ -178,10 +178,11 @@ export default class Signup extends React.Component {
         style: {
           backgroundColor: GLOBALS.primaryErrColor
         }
-      })
+      }})
 
     if(this.state.password !== this.state.confirmPassword)
-      return Toast.show({
+      if(this.toast !== null)
+      return this.toast._root.showToast({config: {
         text: 'Password do not match !',
         position: 'bottom',
         buttonText: 'Okay',
@@ -189,7 +190,7 @@ export default class Signup extends React.Component {
         style: {
           backgroundColor: GLOBALS.primaryErrColor
         }
-      })
+      }})
 
     return 1;
   }
@@ -265,6 +266,7 @@ export default class Signup extends React.Component {
         </View>
       </View>
       </Content>
+      <Toast ref={c => {this.toast = c}} />
       </Container>
     );
   }
@@ -322,7 +324,7 @@ const styles = StyleSheet.create({
     borderWidth: 0
   },
   btn: {
-    backgroundColor: GLOBALS.primaryColorDark, 
+    backgroundColor: '#0B8457', 
     borderRadius: 25,
     marginTop: 15,
     height: 50

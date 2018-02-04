@@ -21,10 +21,7 @@ export default class AppBar extends React.Component{
   
   constructor(){
     super();
-  }
-
-  componentWillUnmount() { 
-    ActionSheet.actionsheetInstance = null;
+    this.actionSheet = null;
   }
 
   handlePress(){
@@ -41,7 +38,8 @@ export default class AppBar extends React.Component{
     })
 
     if(this.props.icon === 'more')
-      ActionSheet.show({
+      if(this.actionSheet !== null){
+      this.actionSheet._root.showActionSheet({
         options: BUTTONS,
         cancelButtonIndex: 1,
         title: 'More'
@@ -52,28 +50,17 @@ export default class AppBar extends React.Component{
           this.props.navigation.dispatch(removeFromStack);
           AsyncStorage.getItem('userData').then(val => {
             if(val)
-              fetch(config.SERVER_URI+'/addRecentActivity', {
-                method: 'post',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                  type: 'LOGOUT', 
-                  owner: {
-                    id: JSON.parse(val)._id,
-                    name: JSON.parse(val).name
-                  }
-                })
-              })
-                .then(res => {
-                  if(!res.ok)
-                    console.log('Error logging');
-                  AsyncStorage.removeItem('userData');
-                })
-                .catch(res => {
-                  console.log('Error logging');
-                })
+              GLOBALS.socket.emit('record-activity', {
+                type: 'LOGOUT',
+                owner: {
+                  id: JSON.parse(val)._id,
+                  name: JSON.parse(val).name
+                }
+              });
           }).done();
         }
       })
+    }
     
     if(this.props.icon === 'search'){
       this.props.navigation.navigate('volunteerSearch');
@@ -100,9 +87,6 @@ export default class AppBar extends React.Component{
 
     let icon = this.props.icon === 'none' ? <Right /> : 
     <Right>
-      <Button transparent rounded>
-        <Icon name='refresh' style={{color: '#fff'}} />
-      </Button>
       <Button transparent rounded
         onPress={this.handlePress.bind(this)}>
         <Icon name={this.props.icon} style={{color: '#fff'}}/>
@@ -111,12 +95,13 @@ export default class AppBar extends React.Component{
 
     return (
       <Header androidStatusBarColor={GLOBALS.primaryColorDark} style={styles.header}
-        noShadow={this.props.noShadow}>
+        noShadow={this.props.noShadow} hasTabs={this.props.hasTabs}>
           {leftIcon}
           <Body>
             <Title>{this.props.title}</Title>
           </Body>
-          {this.props.isLoading ? <Text/> : icon}
+          {icon}
+          <ActionSheet ref={(c) => { this.actionSheet = c; }} />
       </Header>
     );
   }

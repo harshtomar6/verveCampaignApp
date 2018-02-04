@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Image } from 'react-native';
 import { Text, Card, CardItem, Spinner, List, ListItem, Left, Thumbnail,
-  Body, Right, Icon, Label } from 'native-base';
+  Body, Right, Icon, Label, Toast } from 'native-base';
 let GLOBALS = require('./../globals');
 const config = require('./../config');
 
@@ -9,9 +9,22 @@ export default class AdminHome extends React.Component {
 
   constructor(){
     super();
+    this.toast = null;
     this.state = {
       data: [],
-      isLoading: false
+      isLoading: false,
+      errLoading: false,
+      swiper: [
+        {
+          text: 'ONE'
+        },
+        {
+          text: 'TWO'
+        },
+        {
+          text: 'THREE'
+        }
+      ]
     };
   }
 
@@ -26,7 +39,8 @@ export default class AdminHome extends React.Component {
         .then(res => {
           if(!res.ok){
             this.setState({isLoading: false})
-            return Toast.show({
+            if(this.toast !== null)
+            return this.toast._root.showToast({config: {
               text: JSON.parse(res._bodyText).err,
               position: 'bottom',
               buttonText: 'Okay',
@@ -34,7 +48,7 @@ export default class AdminHome extends React.Component {
               style: {
                  backgroundColor: GLOBALS.primaryErrColor
               }
-            })
+            }})
           }
           GLOBALS.recentActivity = JSON.parse(res._bodyText).data
           this.setState({data: JSON.parse(res._bodyText).data}, () => {
@@ -43,8 +57,9 @@ export default class AdminHome extends React.Component {
           //this.props.isLoading(false)
         })
         .catch(err => {
-          this.setState({isLoading: false})
-          Toast.show({
+          this.setState({isLoading: false, errLoading: true})
+          if(this.toast !== null)
+          this.toast._root.showToast({config: {
             text: 'An Error Occured !',
             position: 'bottom',
             buttonText: 'Okay',
@@ -52,7 +67,7 @@ export default class AdminHome extends React.Component {
             style: {
               backgroundColor: GLOBALS.primaryErrColor
             }
-          })
+          }})
         })
     }
   }
@@ -92,6 +107,7 @@ export default class AdminHome extends React.Component {
   render(){
 
     let summary = this.state.isLoading ? <Spinner color={GLOBALS.primaryColorDark} /> :
+      this.state.errLoading ? <Text>Err Loading</Text>:
       <Body>
         <Label>Total Passes Alloted</Label>
         <Text style={styles.info}>{this.state.data.summary.totalPassesAlloted}</Text>
@@ -102,6 +118,7 @@ export default class AdminHome extends React.Component {
       </Body>
 
     let recentActivity = this.state.isLoading ? <Spinner color={GLOBALS.primaryColorDark} />: 
+      this.state.errLoading ? <Text>Err Loading</Text>:
       <List dataArray={this.state.data.recentActivity}
         renderRow={(item) => 
           <ListItem button avatar
@@ -122,10 +139,8 @@ export default class AdminHome extends React.Component {
         }></List>
     return (
       <View style={styles.container}>
-        <View style={styles.banner}>
-          <Text style={styles.bannerText}>
-            Passes Sold
-          </Text>
+        <View style={{padding: 10, backgroundColor:'#fff'}}>
+          
         </View>
         <Card>
           <CardItem header>
@@ -139,10 +154,11 @@ export default class AdminHome extends React.Component {
           <CardItem header>
             <Text style={{color: GLOBALS.primaryColorDark}}>RECENT ACTIVITY</Text>
           </CardItem>
-          <CardItem>
+          <CardItem style={{flex: 1}}>
             {recentActivity}
           </CardItem>
         </Card>
+        <Toast ref={(c) => {this.toast = c}} />
       </View>
     );
   }
@@ -151,6 +167,12 @@ export default class AdminHome extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1
+  },
+  swiper: {
+    alignItems: 'center',
+    paddingTop: 70,
+    paddingBottom: 70,
+    backgroundColor: '#fff'
   },
   banner: {
     alignItems: 'center',

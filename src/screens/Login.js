@@ -12,17 +12,13 @@ export default class Login extends React.Component {
   constructor(){
     super();
     this.validateInputs = this.validateInputs.bind(this);
+    this.toast = null;
     this.state = {
       username: '',
       password: '',
       isLoading: false,
       err: false
     }
-  }
-
-  componentWillUnmount() { 
-    Toast.toastInstance = null;
-    ActionSheet.actionsheetInstance = null;
   }
 
   handleSubmit(){
@@ -47,7 +43,8 @@ export default class Login extends React.Component {
           return this.props.navigation.dispatch(removeFromStack);
         }
         else{
-          return Toast.show({
+          if(this.toast !== null)
+          return this.toast._root.showToast({config: {
             text: 'Wrong Password for Superuser !',
             position: 'bottom',
             buttonText: 'Okay',
@@ -55,7 +52,7 @@ export default class Login extends React.Component {
             style: {
               backgroundColor: '#096C47'
             }
-          })
+          }})
         }
       }else{
         this.setState({isLoading: true})
@@ -72,7 +69,8 @@ export default class Login extends React.Component {
         .then(res => {
           this.setState({isLoading: false})
           if(!res.ok){
-            return Toast.show({
+            if(this.toast !== null)
+            return this.toast._root.showToast({config: {
               text: JSON.parse(res._bodyText).err,
               position: 'bottom',
               buttonText: 'Okay',
@@ -80,34 +78,24 @@ export default class Login extends React.Component {
               style: {
                 backgroundColor: GLOBALS.primaryErrColor
               }
-            })
+            }})
           }
           
           AsyncStorage.setItem('userType', 'Volunteer');
           AsyncStorage.setItem('userData', JSON.stringify(JSON.parse(res._bodyText).data))
           this.props.navigation.dispatch(moveToVolunteer);
-          fetch(config.SERVER_URI+'/addRecentActivity', {
-            method: 'post',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-              type: 'LOGIN', 
-              owner: {
-                id: JSON.parse(res._bodyText).data._id,
-                name: JSON.parse(res._bodyText).data.name
-              }
-            })
-          })
-            .then(res => {
-              if(!res.ok)
-                console.log('Error logging');
-            })
-            .catch(res => {
-              console.log('Error logging');
-            })
+          GLOBALS.socket.emit('record-activity', {
+            type: 'LOGIN',
+            owner: {
+              id: JSON.parse(res._bodyText).data._id,
+              name: JSON.parse(res._bodyText).data.name
+            }
+          });
         })
         .catch((err) => {
           this.setState({isLoading: false})
-          Toast.show({
+          if(this.toast !== null)
+          this.toast._root.showToast({config: {
             text: 'An Error Occured !',
             position: 'bottom',
             buttonText: 'Okay',
@@ -115,7 +103,7 @@ export default class Login extends React.Component {
             style: {
               backgroundColor: GLOBALS.primaryErrColor
             }
-          })
+          }})
         })
       }
     }
@@ -123,7 +111,8 @@ export default class Login extends React.Component {
 
   validateInputs(){
     if(this.state.username.length === 0)
-      return Toast.show({
+      if(this.toast !== null)
+      return this.toast._root.showToast({config: {
         text: 'Username cannot be left blank !',
         position: 'bottom',
         buttonText: 'Okay',
@@ -131,10 +120,11 @@ export default class Login extends React.Component {
         style: {
           backgroundColor: GLOBALS.primaryErrColor
         }
-      })
+      }})
 
     if(this.state.password.length === 0)
-      return Toast.show({
+      if(this.toast !== null)
+      return this.toast._root.showToast({config: {
         text: 'Password cannot be left blank !',
         position: 'bottom',
         buttonText: 'Okay',
@@ -142,7 +132,7 @@ export default class Login extends React.Component {
         style: {
           backgroundColor: GLOBALS.primaryErrColor
         }
-      })
+      }})
 
     return 1;
   }
@@ -164,7 +154,7 @@ export default class Login extends React.Component {
           <Form>
           <Item rounded style={styles.input}>
             <Icon name="person" style={{color: '#fff'}}/>
-            <Input placeholder="username" placeholderTextColor='#fff'
+            <Input placeholder="USN" placeholderTextColor='#fff'
               onChangeText={text => this.setState({username: text})}
               value={this.state.username}
               style={{color: '#fff'}} />
@@ -189,6 +179,7 @@ export default class Login extends React.Component {
             <Text style={{color: '#fff'}}>Become A Volunteer</Text>
           </Button>
         </View>
+        <Toast ref={c => {this.toast = c;}} />
       </View>
     );
   }
@@ -244,7 +235,7 @@ const styles = StyleSheet.create({
     borderWidth: 0
   },
   btn: {
-    backgroundColor: GLOBALS.primaryColorDark, 
+    backgroundColor: '#0B8457', 
     borderRadius: 25,
     marginTop: 15,
     height: 50

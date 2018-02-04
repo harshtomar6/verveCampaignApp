@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, AsyncStorage } from 'react-native';
 import {List, ListItem, Text, Body, Right, Icon, Spinner, Toast,
-  Left, Thumbnail } from 'native-base';
+  Left, Thumbnail, Tabs, Tab } from 'native-base';
 const config = require('./../config');
 let GLOBALS = require('./../globals');
 
@@ -9,6 +9,7 @@ export default class Volunteers extends React.Component {
 
   constructor(){
     super();
+    this.toast = null;
     this.state = {
       data: [],
       isLoading: false
@@ -26,8 +27,9 @@ export default class Volunteers extends React.Component {
       fetch(config.SERVER_URI+'/getVolunteers')
         .then(res => {
           this.setState({isLoading: false})
-          if(!res.ok)
-            return Toast.show({
+          if(!res.ok){
+            if(this.toast !== null)
+            return this.toast._root.showToast({config: {
               text: JSON.parse(res._bodyText).err,
               position: 'bottom',
               buttonText: 'Okay',
@@ -35,14 +37,16 @@ export default class Volunteers extends React.Component {
               style: {
                  backgroundColor: GLOBALS.primaryErrColor
               }
-            })
+            }})
+          }
           GLOBALS.volunteerList = JSON.parse(res._bodyText).data
           this.setState({data: JSON.parse(res._bodyText).data})
           this.props.isLoading(false)
         })
         .catch(err => {
           this.setState({isLoading: false})
-          Toast.show({
+          if(this.toast !== null)
+          this.toast._root.showToast({config: {
             text: 'An Error Occured !',
             position: 'bottom',
             buttonText: 'Okay',
@@ -50,7 +54,7 @@ export default class Volunteers extends React.Component {
             style: {
               backgroundColor: GLOBALS.primaryErrColor
             }
-          })
+          }})
         })
     }
   }
@@ -74,23 +78,33 @@ export default class Volunteers extends React.Component {
     let showSpinner = this.state.isLoading ? <Spinner color={GLOBALS.primaryColorDark}/>: <Text></Text>
     return (
       <View style={styles.container}>
-        {showSpinner}
-        <List dataArray={this.state.data}
-          renderRow={item => 
-            <ListItem button avatar 
-              onPress={() => this.handlePress(item._id, item.name, item.passesSold)}>
-              <Left>
-                <Thumbnail style={{width: 45, height: 45}} source={require('./../volunteer-thumbnail.png')} />
-              </Left>
-              <Body>
-                <Text>{item.name}</Text>
-                <Text note>Passes Sold: {item.passesSold}</Text>
-              </Body>
-              <Right>
-                <Icon name="arrow-forward"></Icon>
-              </Right>
-            </ListItem>  
-          }></List>
+        <Tabs>
+          <Tab heading="Volunteers" tabStyle={styles.tabStyle}
+            activeTabStyle={styles.tabStyle}>
+          {showSpinner}
+            <List dataArray={this.state.data}
+            renderRow={item => 
+              <ListItem button avatar 
+                onPress={() => this.handlePress(item._id, item.name, item.passesSold)}>
+                <Left>
+                  <Thumbnail style={{width: 45, height: 45}} source={require('./../volunteer-thumbnail.png')} />
+                </Left>
+                <Body>
+                  <Text>{item.name}</Text>
+                  <Text note>Passes Sold: {item.passesSold}</Text>
+                </Body>
+                <Right>
+                  <Icon name="arrow-forward"></Icon>
+                </Right>
+              </ListItem>  
+            }></List>
+            <Toast ref={c => {this.toast = c;}} />
+          </Tab>
+          <Tab heading="Participants" tabStyle={styles.tabStyle}
+            activeTabStyle={styles.tabStyle}>
+          {showSpinner}
+          </Tab>
+        </Tabs>
       </View>
     );
   }
@@ -101,5 +115,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff'
+  },
+  tabStyle: {
+    backgroundColor: GLOBALS.primaryColor
   }
 })

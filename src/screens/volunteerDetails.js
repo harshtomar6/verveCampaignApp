@@ -12,19 +12,22 @@ export default class VolunteerDetails extends React.Component {
   constructor(){
     super();
     this.callNumber = this.callNumber.bind(this);
+    this.toast = null;
     this.state = {
       data: '',
       isLoading: false,
       volunteerId: '',
       modalVisible: false,
       passes: '',
-      allotingPasses: false
+      allotingPasses: false,
+      resetModalVisible: false,
+      resettingPasses: false
     }
   }
 
   componentWillMount(){
     this.setState({
-      volunteerID: this.props.navigation.state.params.volunteerId
+      volunteerId: this.props.navigation.state.params.volunteerId
     })
   }
 
@@ -37,8 +40,9 @@ export default class VolunteerDetails extends React.Component {
     })
       .then(res => {
         this.setState({isLoading: false})
-        if(!res.ok)
-          return Toast.show({
+        if(!res.ok){
+          if(this.toast !== null)
+          return this.toast._root.showToast({
             text: JSON.parse(res._bodyText).err,
             position: 'bottom',
             buttonText: 'Okay',
@@ -47,13 +51,15 @@ export default class VolunteerDetails extends React.Component {
               backgroundColor: GLOBALS.primaryErrColor
             }
           })
+        }
         
         this.setState({data: JSON.parse(res._bodyText).data})
       })
       .catch(err => {
         alert(err)
         this.setState({isLoading: false})
-        Toast.show({
+        if(this.toast !== null)
+        this.toast._root.showToast({
           text: 'An Error Occured !',
           position: 'bottom',
           buttonText: 'Okay',
@@ -63,11 +69,6 @@ export default class VolunteerDetails extends React.Component {
           }
         })
       })
-  }
-
-  componentWillUnmount(){
-    Toast.toastInstance = null;
-    ActionSheet.actionsheetInstance = null;
   }
 
   callNumber(phoneNumber){
@@ -92,49 +93,41 @@ export default class VolunteerDetails extends React.Component {
   }
 
   handleReset(){
-    Alert.alert(
-      'Reset Alloted Passes',
-      'Are You Sure ? ',
-      [
-        {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-        {text: 'OK', onPress: () => this.resetPasses},
-      ],
-      { cancelable: false }
-    )
+    this.setState({resetModalVisible: true})
   }
 
   resetPasses(){
-    fetch(config.SERVER_URI+'/deallotPasses', {
-      method: 'post',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({id: this.state.volunteerId})
+    this.setState({resetPasses: true});
+    GLOBALS.socket.emit('reset-passes', {id: this.state.volunteerId})
+    GLOBALS.socket.on('ok', data => {
+      this.setState({resetPasses: false, resetModalVisible: false})
+      let d = this.state.data;
+      d.passesAlloted = 0;
+      this.setState({data: d})
+      if(this.toast !== null)
+      this.toast._root.showToast({config:{
+        text: 'Passes Resetted',
+        position: 'bottom',
+        buttonText: 'Okay',
+        duration: 3000,
+        style: {
+          backgroundColor: GLOBALS.primaryColor
+        }
+      }})
     })
-      .then(res => {
-        this.setState({isLoading: false})
-        if(!res.ok)
-          return Toast.show({
-            text: JSON.parse(res._bodyText).err,
-            position: 'bottom',
-            buttonText: 'Okay',
-            duration: 3000,
-            style: {
-              backgroundColor: GLOBALS.primaryErrColor
-            }
-          })
-          //this.props.isLoading(false)
-      })
-      .catch(err => {
-        this.setState({isLoading: false})
-        Toast.show({
-          text: 'An Error Occured !',
-          position: 'bottom',
-          buttonText: 'Okay',
-          duration: 3000,
-          style: {
-            backgroundColor: GLOBALS.primaryErrColor
-          }
-        })
-      })
+    GLOBALS.socket.on('err', data => {
+      this.setState({resetPasses: false, resetModalVisible: false});
+      if(this.toast !== null)
+      this.toast._root.showToast({config:{
+        text: 'An Error Occured !',
+        position: 'bottom',
+        buttonText: 'Okay',
+        duration: 3000,
+        style: {
+          backgroundColor: GLOBALS.primaryErrColor
+        }
+      }})
+    })
   }
 
   blockVolunteer(){
@@ -154,8 +147,9 @@ export default class VolunteerDetails extends React.Component {
       })
         .then(res => {
           this.setState({allotingPasses: false, modalVisible: false})
-          if(!res.ok)
-            return Toast.show({
+          if(!res.ok){
+            if(this.toast !== null)
+            return this.toast._root.showToast({config: {
               text: JSON.parse(res._bodyText).err,
               position: 'bottom',
               buttonText: 'Okay',
@@ -163,37 +157,41 @@ export default class VolunteerDetails extends React.Component {
               style: {
                 backgroundColor: GLOBALS.primaryErrColor
               }
-            })
-          
+            }})
+          }
           let d = this.state.data;
           d.passesAlloted = this.state.passes;
           this.setState({data: d})
-          Toast.show({
-            text: 'Passes Alloted',
-            position: 'bottom',
-            buttonText: 'Okay',
-            duration: 3000,
-            style: {
-              backgroundColor: GLOBALS.primaryColor
-            }
-          })
+          GLOBALS.socket.emit('allot-passes', {id: this.state.volunteerId})
+          if(this.toast !== null)
+            this.toast._root.showToast({config: {
+              text: 'Passes Alloted',
+              position: 'bottom',
+              buttonText: 'Okay',
+              duration: 3000,
+              style: {
+                backgroundColor: GLOBALS.primaryColor
+              }
+            }})
         })
         .catch(err => {
           alert(err)
           this.setState({allotingPasses: false})
-          Toast.show({
-            text: 'An Error Occured !',
-            position: 'bottom',
-            buttonText: 'Okay',
-            duration: 3000,
-            style: {
-              backgroundColor: GLOBALS.primaryErrColor
-            }
-          })
+          if(this.toast !== null)
+            this.toast._root.showToast({config:{
+              text: 'An Error Occured !',
+              position: 'bottom',
+              buttonText: 'Okay',
+              duration: 3000,
+              style: {
+                backgroundColor: GLOBALS.primaryErrColor
+              }
+            }})
         })
     }else{
       this.setState({modalVisible: false})
-      Toast.show({
+      if(this.toast !== null)
+      this.toast._root.showToast({config:{
         text: 'Passes number should be greater than 0 !',
         position: 'bottom',
         buttonText: 'Okay',
@@ -201,7 +199,7 @@ export default class VolunteerDetails extends React.Component {
         style: {
           backgroundColor: GLOBALS.primaryErrColor
         }
-      })
+      }})
     }
   }
 
@@ -303,6 +301,30 @@ export default class VolunteerDetails extends React.Component {
             </View>
           </View>
         </Modal>
+
+        {/* RESET PASSES MODAL*/}
+        
+        <Modal visible={this.state.resetModalVisible}
+          onRequestClose={() => this.setState({resetModalVisible: false})}
+          animationType={'fade'} transparent>
+          <View onResponderGrant={() => this.setState({resetModalVisible: false})} 
+            style={styles.modalOuterContainer}>
+            <View style={styles.modalInnerContainer}>
+              <Text style={styles.modalTitle}>Reset Alloted Passes</Text>
+              <Text style={styles.modalSubTitle}>Are You Sure</Text>
+              <View style={styles.modalFooter}>
+                <Button transparent
+                  onPress={() => this.setState({resetModalVisible: false})}>
+                  <Text style={{color: GLOBALS.primaryColorDark}}>CANCEL</Text>
+                </Button>
+                <Button transparent onPress={this.resetPasses.bind(this)}>
+                  <Text style={{color: GLOBALS.primaryColorDark}}>OK</Text>
+                </Button>
+              </View>
+              {this.state.resettingPasses ? <Spinner color={GLOBALS.primaryColorDark} /> : <Text></Text>}
+            </View>
+          </View>
+        </Modal>
         
         <Content>
           <View style={styles.banner}>
@@ -342,6 +364,7 @@ export default class VolunteerDetails extends React.Component {
             </CardItem>
           </Card>
         </Content>
+        <Toast ref={(c) => {this.toast = c; }} />
       </Container>
     );
   }

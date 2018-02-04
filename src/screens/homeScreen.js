@@ -36,11 +36,6 @@ export default class HomeScreen extends React.Component {
     this.updateTabStyle(e)
   }
 
-  componentWillUnmount(){
-    Toast.toastInstance = null;
-    ActionSheet.actionsheetInstance = null;
-  }
-
   updateTabStyle(ref){
     switch(ref){
       case 0:
@@ -66,8 +61,9 @@ export default class HomeScreen extends React.Component {
           tabs: [styles.inactive, styles.inactive, styles.active, styles.inactive, styles.inactive],
           tabsText: [styles.tabsTextInactive, styles.tabsTextInactive, 
             styles.tabTextActive, styles.tabsTextInactive, styles.tabsTextInactive],
-          appBarTitle: 'Volunteers',
-          icon: 'search'
+          appBarTitle: 'People',
+          icon: 'search',
+          hasTabs: true
         });
         break;
       case 3:
@@ -116,7 +112,7 @@ export default class HomeScreen extends React.Component {
     return(
       <Container>
         <AppBar title={this.state.appBarTitle} left='none'
-         icon={this.state.icon} isLoading={this.state.isLoading}
+         icon={this.state.icon} hasTabs={this.state.hasTabs}
          navigation = {this.props.navigation} />
         <Content >
           {content}
@@ -133,7 +129,7 @@ export default class HomeScreen extends React.Component {
             </Button>
             <Button vertical ref={2} onPress={() => this._handleTabTouch(2)}>
               <Icon name="people" style={this.state.tabs[2]}/>
-              <Text style={this.state.tabsText[2]}>Volunteers</Text>
+              <Text style={this.state.tabsText[2]}>People</Text>
             </Button>
             <Button vertical ref={3} onPress={() => this._handleTabTouch(3)}>
               <Icon name="document" style={this.state.tabs[3]}/>
@@ -167,11 +163,11 @@ const styles = StyleSheet.create({
     color: GLOBALS.primaryColorInactive
   },
   tabTextActive: {
-    fontSize: 6.2,
+    fontSize: 7.6,
     color: GLOBALS.primaryColorDark
   },
   tabsTextInactive: {
-    fontSize: 6.2,
+    fontSize: 7.6,
     color: GLOBALS.primaryColorInactive
   }
 });

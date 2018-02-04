@@ -1,9 +1,10 @@
 module.exports = {
+  socket : null,
   recentActivity: {},
   volunteerList : [],
   recentActivityFull: [],
-  primaryColor: '#0B8457',
-  primaryColorDark: '#096C47',
+  primaryColor: '#393C83',
+  primaryColorDark: '#2A2B5F',
   primaryErrColor: '#dc3545',
   primaryColorInactive: '#a9a9a9'
 }

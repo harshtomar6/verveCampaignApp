@@ -4,10 +4,12 @@ import { List, ListItem, Text, Spinner, Left, Body, Right,
   Thumbnail, Icon, Toast } from 'native-base';
 let GLOBALS = require('./../globals');
 let config = require('./../config');
+import SocketIOClient from 'socket.io-client';
 
 export default class RecentActivity extends React.Component {
   constructor(){
     super();
+    this.toast = null;
     this.state = {
       data: [],
       isLoading: false
@@ -24,8 +26,9 @@ export default class RecentActivity extends React.Component {
       fetch(config.SERVER_URI+'/getAllRecentActivity')
         .then(res => {
           this.setState({isLoading: false})
-          if(!res.ok)
-            return Toast.show({
+          if(!res.ok){  
+            if(this.toast !== null)
+            return this.toast._root.showToast({config: {
               text: JSON.parse(res._bodyText).err,
               position: 'bottom',
               buttonText: 'Okay',
@@ -33,13 +36,15 @@ export default class RecentActivity extends React.Component {
               style: {
                  backgroundColor: GLOBALS.primaryErrColor
               }
-            })
+            }})
+          }
           GLOBALS.recentActivityFull = JSON.parse(res._bodyText).data
           this.setState({data: JSON.parse(res._bodyText).data})
         })
         .catch(err => {
           this.setState({isLoading: false})
-          Toast.show({
+          if(this.toast !== null)
+          this.toast._root.showToast({config: {
             text: 'An Error Occured !',
             position: 'bottom',
             buttonText: 'Okay',
@@ -47,9 +52,20 @@ export default class RecentActivity extends React.Component {
             style: {
               backgroundColor: GLOBALS.primaryErrColor
             }
-          })
+          }})
         })
     }
+  }
+
+  componentDidMount(){
+    GLOBALS.socket.on('new-activity', data => {
+      alert('New Activity');
+      let d = this.state.data;
+      d.unshift(data);
+      this.setState({data: d}, () => {
+        GLOBALS.recentActivityFull = this.state.data
+      });
+    })
   }
 
   getRecentActivityIcon(type){
@@ -106,6 +122,7 @@ export default class RecentActivity extends React.Component {
               </Right>
             </ListItem>  
           }></List>
+          <Toast ref={c => {this.toast = c}} />
       </View>
     );
   }

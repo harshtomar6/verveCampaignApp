@@ -62,7 +62,7 @@ export default class VolunteerSearch extends React.Component {
             </Button>
           </Left> 
           <Item style={{left: -60}}>
-            <Input placeholder='Search by first name or last name' 
+            <Input placeholder='Search by name' 
               onChangeText={(text) => this.handleChange(text)} autoFocus/>
           </Item>
         </Header>
