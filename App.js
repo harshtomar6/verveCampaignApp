@@ -10,6 +10,8 @@ import Splash from './src/screens/splashScreen';
 import VolunteerScreen from './src/screens/volunteerScreen';
 import volunteerDetails from './src/screens/volunteerDetails';
 import VolunteerSearch from './src/screens/volunteerSearch';
+import ReviewSell from './src/screens/reviewSell';
+import ParticipantDetails from './src/screens/participantDetails';
 const config = require('./src/config');
 const GLOBALS = require('./src/globals');
 
@@ -20,7 +22,9 @@ const RootNavigator = StackNavigator({
   Signup: {screen: Signup},
   Volunteer: {screen: VolunteerScreen},
   volunteerDetails: {screen: volunteerDetails},
-  volunteerSearch: {screen: VolunteerSearch}
+  volunteerSearch: {screen: VolunteerSearch},
+  reviewSell: {screen: ReviewSell},
+  participantDetails: {screen: ParticipantDetails}
 },{
   headerMode: 'none',
   navigationOptions: {

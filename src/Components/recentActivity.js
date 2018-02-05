@@ -59,11 +59,13 @@ export default class RecentActivity extends React.Component {
 
   componentDidMount(){
     GLOBALS.socket.on('new-activity', data => {
-      alert('New Activity');
+      //alert(this.state.data.length);
       let d = this.state.data;
       d.unshift(data);
       this.setState({data: d}, () => {
         GLOBALS.recentActivityFull = this.state.data
+        //this.forceUpdate()
+        alert(this.state.data.length)
       });
     })
   }

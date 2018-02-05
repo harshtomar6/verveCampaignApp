@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet, AsyncStorage } from 'react-native';
 import {List, ListItem, Text, Body, Right, Icon, Spinner, Toast,
   Left, Thumbnail, Tabs, Tab } from 'native-base';
+import Participants from './Participants';
 const config = require('./../config');
 let GLOBALS = require('./../globals');
 
@@ -102,7 +103,7 @@ export default class Volunteers extends React.Component {
           </Tab>
           <Tab heading="Participants" tabStyle={styles.tabStyle}
             activeTabStyle={styles.tabStyle}>
-          {showSpinner}
+            <Participants navigation={this.state.navigation}/>
           </Tab>
         </Tabs>
       </View>

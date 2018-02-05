@@ -97,10 +97,10 @@ export default class VolunteerDetails extends React.Component {
   }
 
   resetPasses(){
-    this.setState({resetPasses: true});
+    this.setState({resettingPasses: true});
     GLOBALS.socket.emit('reset-passes', {id: this.state.volunteerId})
     GLOBALS.socket.on('ok', data => {
-      this.setState({resetPasses: false, resetModalVisible: false})
+      this.setState({resettingPasses: false, resetModalVisible: false})
       let d = this.state.data;
       d.passesAlloted = 0;
       this.setState({data: d})
@@ -162,7 +162,7 @@ export default class VolunteerDetails extends React.Component {
           let d = this.state.data;
           d.passesAlloted = this.state.passes;
           this.setState({data: d})
-          GLOBALS.socket.emit('allot-passes', {id: this.state.volunteerId})
+          GLOBALS.socket.emit('allot-passes', {id: this.state.volunteerId, passes: this.state.passes})
           if(this.toast !== null)
             this.toast._root.showToast({config: {
               text: 'Passes Alloted',
@@ -409,7 +409,7 @@ const styles = StyleSheet.create({
     borderRadius: 2
   },
   modalTitle: {
-    fontWeight: '400',
+    fontWeight: '600',
     fontSize: 20
   },
   modalSubTitle:{

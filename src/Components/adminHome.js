@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Image } from 'react-native';
 import { Text, Card, CardItem, Spinner, List, ListItem, Left, Thumbnail,
   Body, Right, Icon, Label, Toast } from 'native-base';
+import { VictoryPie } from 'victory-native';
 let GLOBALS = require('./../globals');
 const config = require('./../config');
 
@@ -139,8 +140,18 @@ export default class AdminHome extends React.Component {
         }></List>
     return (
       <View style={styles.container}>
-        <View style={{padding: 10, backgroundColor:'#fff'}}>
-          
+        <View style={{padding: 10, backgroundColor:'#fff', justifyContent: 'center', alignItems: 'center'}}>
+        <VictoryPie
+            data={[
+              { x: "Cats", y: 35 },
+              { x: "Dogs", y: 40 },
+              { x: "Birds", y: 55 }
+            ]}
+            animate={{duration: 2000}}
+            colorScale={["tomato", "navy", "orange"]}
+            labelRadius={90}
+            style={{labels: {fill: '#fff'}}}  
+          />
         </View>
         <Card>
           <CardItem header>
