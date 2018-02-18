@@ -1,5 +1,6 @@
 module.exports = {
   socket : null,
+  userData: {},
   recentActivity: {},
   volunteerList : [],
   participantList: [],

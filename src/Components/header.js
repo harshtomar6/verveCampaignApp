@@ -22,6 +22,15 @@ export default class AppBar extends React.Component{
   constructor(){
     super();
     this.actionSheet = null;
+    this.state = {
+      'userType': ''
+    }
+  }
+
+  componentWillMount(){
+    AsyncStorage.getItem('userType').then(val => {
+      this.setState({userType: val})
+    }).done()
   }
 
   handlePress(){
@@ -63,7 +72,32 @@ export default class AppBar extends React.Component{
     }
     
     if(this.props.icon === 'search'){
-      this.props.navigation.navigate('volunteerSearch');
+      if(this.state.userType === 'Admin')
+        this.props.navigation.navigate('volunteerSearch');
+      else
+        this.props.navigation.navigate('participantSearch');
+    }
+  }
+
+  handleRightPress(){
+    if(this.props.right === 'refresh'){
+      switch(this.props.active){
+        case 0:
+          this.props.refresh(0);
+          break;
+        case 1:
+          this.props.refresh(1);
+          break;
+        case 2:
+          this.props.refresh(2);
+          break;
+        case 3:
+          this.props.refresh(3);
+          break;
+        case 4:
+          this.props.refresh(4);
+          break;
+      }
     }
   }
 
@@ -85,12 +119,20 @@ export default class AppBar extends React.Component{
       </Button>
     </Left> 
 
-    let icon = this.props.icon === 'none' ? <Right /> : 
+    let icon = this.props.icon === 'none' && this.props.right==='none' ? <Right /> : 
     <Right>
-      <Button transparent rounded
-        onPress={this.handlePress.bind(this)}>
-        <Icon name={this.props.icon} style={{color: '#fff'}}/>
-      </Button>
+      {this.props.right === 'none' ? <Text />: 
+        <Button transparent rounded
+          onPress={this.handleRightPress.bind(this)}>
+          <Icon name={this.props.right} style={{color: '#fff'}}/>
+        </Button>
+      }
+      {this.props.icon === 'none' ? <Text />: 
+        <Button transparent rounded
+          onPress={this.handlePress.bind(this)}>
+          <Icon name={this.props.icon} style={{color: '#fff'}}/>
+        </Button>
+      }
     </Right> 
 
     return (

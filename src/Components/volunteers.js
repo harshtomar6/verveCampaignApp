@@ -11,6 +11,7 @@ export default class Volunteers extends React.Component {
   constructor(){
     super();
     this.toast = null;
+    this.fetchData = this.fetchData.bind(this);
     this.state = {
       data: [],
       isLoading: false
@@ -21,10 +22,21 @@ export default class Volunteers extends React.Component {
 
     if(GLOBALS.volunteerList.length > 0){
       this.setState({data: GLOBALS.volunteerList})
-      this.props.isLoading(false)
+      //this.props.isLoading(false)
     }
     else{
-      this.setState({isLoading: true})
+      this.fetchData()
+    }
+  }
+
+  componentWillReceiveProps(newProps){
+    if(newProps.refresh){
+      this.fetchData()
+    }
+  }
+
+  fetchData(){
+    this.setState({isLoading: true})
       fetch(config.SERVER_URI+'/getVolunteers')
         .then(res => {
           this.setState({isLoading: false})
@@ -57,7 +69,6 @@ export default class Volunteers extends React.Component {
             }
           }})
         })
-    }
   }
 
   categorizeList(name){
@@ -79,9 +90,6 @@ export default class Volunteers extends React.Component {
     let showSpinner = this.state.isLoading ? <Spinner color={GLOBALS.primaryColorDark}/>: <Text></Text>
     return (
       <View style={styles.container}>
-        <Tabs>
-          <Tab heading="Volunteers" tabStyle={styles.tabStyle}
-            activeTabStyle={styles.tabStyle}>
           {showSpinner}
             <List dataArray={this.state.data}
             renderRow={item => 
@@ -100,12 +108,6 @@ export default class Volunteers extends React.Component {
               </ListItem>  
             }></List>
             <Toast ref={c => {this.toast = c;}} />
-          </Tab>
-          <Tab heading="Participants" tabStyle={styles.tabStyle}
-            activeTabStyle={styles.tabStyle}>
-            <Participants navigation={this.state.navigation}/>
-          </Tab>
-        </Tabs>
       </View>
     );
   }

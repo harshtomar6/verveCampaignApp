@@ -1,3 +1,3 @@
 module.exports = {
-  SERVER_URI: 'https://verve2k18.herokuapp.com'
+  SERVER_URI: 'http://192.168.43.111:3000'
 }

@@ -1,11 +1,11 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, AsyncStorage } from 'react-native';
 import { Container, Header, Content, Text, Left, Button,
-  Icon, Item, Input, Body, Form, List, ListItem, Right, Thumbnail, Separator } from 'native-base';
+  Icon, Item, Input, Body, Form, List, ListItem, Right, Thumbnail, Toast } from 'native-base';
 const GLOBALS = require('./../globals');
 let config = require('./../config');
 
-export default class VolunteerSearch extends React.Component {
+export default class ParticipantSearch extends React.Component {
 
   constructor(){
     super();
@@ -13,9 +13,7 @@ export default class VolunteerSearch extends React.Component {
     this.state = {
       searchText: '',
       participantList: '',
-      volunteerList: '',
-      searchResultVolunteer: [],
-      searchResultParticipant: [],
+      searchResult: [],
       isLoading: false
     }
   }
@@ -23,9 +21,8 @@ export default class VolunteerSearch extends React.Component {
   componentWillMount(){
     if(GLOBALS.participantList.length === 0){
       this.fetchData();
-      this.setState({volunteerList: GLOBALS.volunteerList})
     }else
-      this.setState({participantList: GLOBALS.participantList, volunteerList: GLOBALS.volunteerList})
+      this.setState({participantList: GLOBALS.participantList})
   }
 
   fetchData(){
@@ -62,19 +59,18 @@ export default class VolunteerSearch extends React.Component {
           }})
         })
   }
-  
+
   handleChange(text){
-    let result = [], result2 = []
-    this.setState({searchText: text, searchResultVolunteer: [], searchResultParticipant: []}, () => {
-      result = this.state.searchResultVolunteer;
-      result2 = this.state.searchResultParticipant
+    let result = []
+    this.setState({searchText: text, searchResult: []}, () => {
+      result = this.state.searchResult;
     })
-    let i=0,j=0;
+    let i=0;
 
     if(text == '')
-      return this.setState({searchResultVolunteer: [], searchResultParticipant: []})
+      return this.setState({searchResult: []})
 
-    this.state.volunteerList.forEach((item) => {
+    this.state.participantList.forEach((item) => {
       i++;
       if(item.name.toLowerCase().indexOf(text.toLowerCase()) !== -1){
         result.push(item);
@@ -84,37 +80,13 @@ export default class VolunteerSearch extends React.Component {
           //result.splice(index, 1);
       }
 
-      if(i === this.state.volunteerList.length){  
-        this.setState({searchResultVolunteer: result})
-      }
-    })
-
-    this.state.participantList.forEach((item) => {
-      j++;
-      if(item.name.toLowerCase().indexOf(text.toLowerCase()) !== -1){
-        result2.push(item);
-      }else{
-        //let index = this.state.volunteerList.indexOf(item);
-        //if(index !== -1)
-          //result.splice(index, 1);
-      }
-
-      if(j === this.state.participantList.length){  
-        this.setState({searchResultParticipant: result2})
+      if(i === this.state.participantList.length){  
+        this.setState({searchResult: result})
       }
     })
   }
 
-  handlePress(volunteerId, volunteerName, passesSold){
-    const { navigate } = this.props.navigation;
-    navigate('volunteerDetails', {
-      volunteerId,
-      volunteerName,
-      passesSold
-    })
-  }
-
-  handlePressParticipant(participantId, participantName, _id){
+  handlePress(participantId, participantName, _id){
     const { navigate } = this.props.navigation;
     navigate('participantDetails', {
       participantId,
@@ -135,7 +107,7 @@ export default class VolunteerSearch extends React.Component {
             </Button>
           </Left> 
           <Item style={{left: -60}}>
-            <Input placeholder='Search by name' 
+            <Input placeholder='Search by name or ID' 
               onChangeText={(text) => this.handleChange(text)} autoFocus={!this.state.isLoading}
               editable={!this.state.isLoading}/>
           </Item>
@@ -150,38 +122,11 @@ export default class VolunteerSearch extends React.Component {
           </Text>
         </View>
         <Content>
-          
           <View style={{backgroundColor:'#fff'}}>
-          <Separator bordered>
-          <Text style={styles.title}>
-            {this.state.searchText === '' ? '' : 'Volunteers'}
-          </Text>
-          </Separator>
-          <List dataArray={this.state.searchResultVolunteer}
-                 renderRow={item => 
-                   <ListItem button avatar
-                     onPress={() => this.handlePress(item._id, item.name, item.passesSold)}>
-                     <Left>
-                       <Thumbnail style={{width: 45, height: 45}} source={require('./../volunteer-thumbnail.png')} />
-                     </Left>
-                     <Body>
-                       <Text>{item.name}</Text>
-                       <Text note>Passes Sold: {item.passesSold}</Text>
-                     </Body>
-                     <Right>
-                       <Icon name="arrow-forward"></Icon>
-                     </Right>
-                   </ListItem>  
-               }></List> 
-            <Separator bordered>
-            <Text style={styles.title}>
-              {this.state.searchText === '' ? '' : 'Participants'}
-            </Text>
-            </Separator>
-            <List dataArray={this.state.searchResultParticipant}
+          <List dataArray={this.state.searchResult}
           renderRow={item => 
             <ListItem button avatar
-              onPress={() => this.handlePressParticipant(item.id, item.name, item._id)}>
+              onPress={() => this.handlePress(item.id, item.name, item._id)}>
               <Left>
                 <Thumbnail style={{width: 45, height: 45}} source={require('./../participant.png')} />
               </Left>
@@ -193,9 +138,10 @@ export default class VolunteerSearch extends React.Component {
                 <Icon name="arrow-forward"></Icon>
               </Right>
             </ListItem>  
-            }></List>
+          }></List>
           </View>
         </Content>
+        <Toast ref={c => {this.toast = c}} />
       </Container>
     );
   }
@@ -204,10 +150,5 @@ export default class VolunteerSearch extends React.Component {
 const styles = StyleSheet.create({
   header: {
     backgroundColor: GLOBALS.primaryColor
-  },
-  title: {
-    color: GLOBALS.primaryColor,
-    margin: 10,
-    fontSize: 14
   }
 })

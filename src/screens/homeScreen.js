@@ -8,13 +8,14 @@ import {
   Text,
   Footer,
   Spinner,
-  FooterTab, Toast, ActionSheet
+  FooterTab, Toast, ActionSheet, Tabs, Tab
 } from 'native-base';
 import AppBar from './../Components/header';
 import About from './../Components/about';
 import Volunteers from './../Components/volunteers';
 import AdminHome from './../Components/adminHome';
 import RecentActivity from './../Components/recentActivity';
+import Participants from './../Components/Participants';
 let GLOBALS = require('./../globals');
 
 export default class HomeScreen extends React.Component {
@@ -28,7 +29,12 @@ export default class HomeScreen extends React.Component {
         styles.tabsTextInactive, styles.tabsTextInactive, styles.tabsTextInactive],
       appBarTitle: 'Verve 2018',
       icon: 'more',
-      isLoading: true
+      isLoading: true,
+      right: 'refresh',
+      active: 0,
+      refresh0: false,
+      refresh2: false,
+      refresh3: false
     }
   }
 
@@ -44,7 +50,9 @@ export default class HomeScreen extends React.Component {
           tabsText: [styles.tabTextActive, styles.tabsTextInactive, 
             styles.tabsTextInactive, styles.tabsTextInactive, styles.tabsTextInactive],
           appBarTitle: 'Verve 2018',
-          icon: 'more'
+          icon: 'more',
+          right: 'refresh',
+          active: 0
         });
         break;
       case 1:
@@ -52,8 +60,10 @@ export default class HomeScreen extends React.Component {
           tabs: [styles.inactive, styles.active, styles.inactive, styles.inactive, styles.inactive],
           tabsText: [styles.tabsTextInactive, styles.tabTextActive, 
             styles.tabsTextInactive, styles.tabsTextInactive, styles.tabsTextInactive],
-          appBarTitle: 'Requests',
-          icon: 'none'
+          appBarTitle: 'Events',
+          icon: 'none',
+          right: 'none',
+          active: 1
         });
         break;
       case 2:
@@ -63,7 +73,9 @@ export default class HomeScreen extends React.Component {
             styles.tabTextActive, styles.tabsTextInactive, styles.tabsTextInactive],
           appBarTitle: 'People',
           icon: 'search',
-          hasTabs: true
+          hasTabs: true,
+          right: 'refresh',
+          active: 2
         });
         break;
       case 3:
@@ -72,7 +84,9 @@ export default class HomeScreen extends React.Component {
           tabsText: [styles.tabsTextInactive, styles.tabsTextInactive, 
             styles.tabsTextInactive, styles.tabTextActive, styles.tabsTextInactive],
           appBarTitle: 'Recent Activity',
-          icon: 'none'
+          icon: 'none',
+          right: 'refresh',
+          active: 3
         })
         break;
       case 4:
@@ -81,7 +95,9 @@ export default class HomeScreen extends React.Component {
           tabsText: [styles.tabsTextInactive, styles.tabsTextInactive, 
             styles.tabsTextInactive, styles.tabsTextInactive, styles.tabTextActive],
           appBarTitle: 'About',
-          icon: 'none'
+          icon: 'none',
+          right: 'none',
+          active: 4
         })
     }
   }
@@ -90,33 +106,62 @@ export default class HomeScreen extends React.Component {
     this.setState({isLoading: data})
   }
 
+  handleRefresh(e){
+    switch(e){
+      case 0:
+        this.setState({refresh0: true});
+        break;
+      case 2:
+        this.setState({refresh2: true});
+        break;
+      case 3:
+        this.setState({refresh3: true});
+        break;
+      default:
+        return
+    }
+  }
+
   render(){
     const { navigate } = this.props.navigation;
     let content=<Text></Text>;
 
     if (this.state.tabs[0] === styles.active)
-      content = <AdminHome navigation={this.props.navigation}/>
+      content = <Content><AdminHome navigation={this.props.navigation} refresh={this.state.refresh0}/></Content>
 
     if (this.state.tabs[1] === styles.active)
-      content = <Text>Hello</Text>
+      content = <Content><Text>Hello</Text></Content>
 
     if (this.state.tabs[2] === styles.active)
-      content= <Volunteers navigation={this.props.navigation} isLoading={this.isLoading} />
+      content= <Tabs>
+                <Tab heading="Volunteers" tabStyle={styles.tabStyle}
+                  activeTabStyle={styles.tabStyle}>
+                  <Content>
+                  <Volunteers navigation={this.props.navigation} isLoading={this.isLoading}
+                        refresh={this.state.refresh2} />
+                  </Content>
+                </Tab>
+                <Tab heading="Participants" tabStyle={styles.tabStyle}
+                  activeTabStyle={styles.tabStyle}>
+                  <Content>
+                    <Participants navigation={this.props.navigation} type='admin' refresh={this.state.refresh2}/>
+                  </Content>
+                </Tab>
+              </Tabs>
     
     if(this.state.tabs[3] === styles.active)
-      content= <RecentActivity navigation={this.props.navigation} />
+      content= <Content><RecentActivity navigation={this.props.navigation} refresh={this.state.refresh3}/></Content>
 
     if (this.state.tabs[4] === styles.active)
-      content = <About />
+      content = <Content><About /></Content>
 
     return(
       <Container>
-        <AppBar title={this.state.appBarTitle} left='none'
-         icon={this.state.icon} hasTabs={this.state.hasTabs}
-         navigation = {this.props.navigation} />
-        <Content >
+        <AppBar title={this.state.appBarTitle} left='none' right={this.state.right}
+         icon={this.state.icon} hasTabs={this.state.hasTabs} active={this.state.active}
+         navigation = {this.props.navigation} refresh={(e) => this.handleRefresh(e)}/>
+        
           {content}
-        </Content>
         <Footer style={{borderTopColor: GLOBALS.primaryColorInactive, borderTopWidth: 0.2}}>
           <FooterTab style={styles.tabs}>
             <Button vertical ref={0} onPress={() => this._handleTabTouch(0)}>
@@ -124,8 +169,8 @@ export default class HomeScreen extends React.Component {
               <Text style={this.state.tabsText[0]}>Home</Text>
             </Button>
             <Button vertical ref={1} onPress={() => this._handleTabTouch(1)}>
-              <Icon name="logo-buffer" style={this.state.tabs[1]}/>
-              <Text style={this.state.tabsText[1]}>Requests</Text>
+              <Icon name="apps" style={this.state.tabs[1]}/>
+              <Text style={this.state.tabsText[1]}>Events</Text>
             </Button>
             <Button vertical ref={2} onPress={() => this._handleTabTouch(2)}>
               <Icon name="people" style={this.state.tabs[2]}/>
@@ -169,5 +214,8 @@ const styles = StyleSheet.create({
   tabsTextInactive: {
     fontSize: 7.6,
     color: GLOBALS.primaryColorInactive
+  },
+  tabStyle: {
+    backgroundColor: GLOBALS.primaryColor
   }
 });

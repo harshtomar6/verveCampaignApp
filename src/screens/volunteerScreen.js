@@ -15,6 +15,7 @@ import AppBar from './../Components/header';
 import SellPass from './../Components/sellPass';
 import Participants from './../Components/Participants';
 import VolunteerHome from './../Components/volunteerHome';
+import About from './../Components/about';
 let GLOBALS = require('./../globals');
 
 export default class VolunteerScreen extends React.Component {
@@ -27,7 +28,11 @@ export default class VolunteerScreen extends React.Component {
       tabsText: [styles.tabTextActive, styles.tabsTextInactive, 
         styles.tabsTextInactive, styles.tabsTextInactive, styles.tabsTextInactive],
       icon: 'more',
-      noShadow: true
+      right: 'refresh',
+      active: 0,
+      noShadow: true,
+      refresh0: false,
+      refresh3: false 
     }
   }
 
@@ -49,6 +54,8 @@ export default class VolunteerScreen extends React.Component {
             styles.tabsTextInactive, styles.tabsTextInactive, styles.tabsTextInactive],
           appBarTitle: 'Verve 2018',
           icon: 'more',
+          right: 'refresh',
+          active: 0,
           noShadow: true
         });
         break;
@@ -58,7 +65,9 @@ export default class VolunteerScreen extends React.Component {
           tabsText: [styles.tabsTextInactive, styles.tabTextActive, 
             styles.tabsTextInactive, styles.tabsTextInactive, styles.tabsTextInactive],
           appBarTitle: 'Events',
+          right: 'refresh',
           icon: 'none',
+          active: 1,
           noShadow: false
         });
         break;
@@ -69,6 +78,8 @@ export default class VolunteerScreen extends React.Component {
             styles.tabTextActive, styles.tabsTextInactive, styles.tabsTextInactive],
           appBarTitle: 'Sell Pass',
           icon: 'none',
+          right: 'none',
+          active: 2,
           noShadow: false
         });
         break;
@@ -79,6 +90,8 @@ export default class VolunteerScreen extends React.Component {
             styles.tabsTextInactive, styles.tabTextActive, styles.tabsTextInactive],
           appBarTitle: 'Participants',
           icon: 'search',
+          right: 'refresh',
+          active: 3,
           noShadow: false
         })
         break;
@@ -89,8 +102,23 @@ export default class VolunteerScreen extends React.Component {
             styles.tabsTextInactive, styles.tabsTextInactive, styles.tabTextActive],
           appBarTitle: 'About',
           icon: 'none',
+          right: 'none',
+          active: 4,
           noShadow: false
         })
+    }
+  }
+
+  handleRefresh(e){
+    switch(e){
+      case 0:
+        this.setState({refresh0: true});
+        break;
+      case 3:
+        this.setState({refresh3: true});
+        break;
+      default:
+        return
     }
   }
 
@@ -98,7 +126,8 @@ export default class VolunteerScreen extends React.Component {
     let content=<Text></Text>;
 
     if (this.state.tabs[0] === styles.active)
-      content = <VolunteerHome handleNav={(e) => {this.updateTabStyle(e)}}/>
+      content = <VolunteerHome handleNav={(e) => {this.updateTabStyle(e)}} refresh={this.state.refresh0}
+        navigation={this.props.navigation}/>
 
     if (this.state.tabs[1] === styles.active)
       content = <Text>Events</Text>
@@ -107,15 +136,16 @@ export default class VolunteerScreen extends React.Component {
       content = <SellPass navigation={this.props.navigation}/>
 
     if (this.state.tabs[3] === styles.active)
-      content= <Participants navigation={this.props.navigation}/>
+      content= <Participants navigation={this.props.navigation} refresh={this.state.refresh3}/>
     
     if(this.state.tabs[4] === styles.active)
-      content= <Text>About</Text>
+      content= <About />
 
     return (
       <Container>
-        <AppBar title={this.state.appBarTitle} icon={this.state.icon} left='none'
-          navigation={this.props.navigation} noShadow={this.state.noShadow}/>
+        <AppBar title={this.state.appBarTitle} icon={this.state.icon} right={this.state.right} left='none'
+          navigation={this.props.navigation} noShadow={this.state.noShadow} active={this.state.active}
+          refresh={(e) => this.handleRefresh(e)}/>
         <Content>
           {content}
         </Content>

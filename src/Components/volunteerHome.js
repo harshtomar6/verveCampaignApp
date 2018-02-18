@@ -26,6 +26,12 @@ export default class VolunteerHome extends React.Component {
     }).done()
   }
 
+  componentWillReceiveProps(newProps){
+    if(newProps.refresh){
+      this.fetchData(this.state.data._id);
+    }
+  }
+
   fetchData(userId){
     this.setState({isLoading: true})
     fetch(config.SERVER_URI+'/getVolunteerDetail', {
@@ -111,8 +117,8 @@ export default class VolunteerHome extends React.Component {
               <Text style={{color: GLOBALS.primaryColor}}>Participant</Text>
             </Button>
             <Button vertical transparent style={styles.btn}
-              onPress={() => this.props.handleNav(5)}>
-              <Icon name="md-buffer" style={{color: GLOBALS.primaryColor, fontSize: 26}}></Icon>
+              onPress={() => this.props.navigation.navigate('participantSearch')}>
+              <Icon name="checkmark" style={{color: GLOBALS.primaryColor, fontSize: 26}}></Icon>
               <Text style={{color: GLOBALS.primaryColor}}>Validate</Text>
             </Button>
             <Button vertical transparent style={styles.btn3}

@@ -65,11 +65,9 @@ export default class ReviewSell extends React.Component {
             d.passesSold += 1;
             
             AsyncStorage.setItem('userData', JSON.stringify(d));
+            this.props.navigation.navigate('Volunteer')
           }
         }).done()
-
-        this.props.navigation.navigate('Volunteer')
-
       })
       .catch(err => {
         alert(err)

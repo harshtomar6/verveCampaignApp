@@ -10,6 +10,7 @@ export default class RecentActivity extends React.Component {
   constructor(){
     super();
     this.toast = null;
+    this.fetchData = this.fetchData.bind(this)
     this.state = {
       data: [],
       isLoading: false
@@ -22,7 +23,18 @@ export default class RecentActivity extends React.Component {
       this.setState({data: GLOBALS.recentActivityFull})
     }
     else{
-      this.setState({isLoading: true})
+      this.fetchData()
+    }
+  }
+
+  componentWillReceiveProps(newProps){
+    if(newProps.refresh){
+      this.fetchData();
+    }
+  }
+
+  fetchData(){
+    this.setState({isLoading: true})
       fetch(config.SERVER_URI+'/getAllRecentActivity')
         .then(res => {
           this.setState({isLoading: false})
@@ -54,7 +66,6 @@ export default class RecentActivity extends React.Component {
             }
           }})
         })
-    }
   }
 
   componentDidMount(){

@@ -11,6 +11,7 @@ export default class AdminHome extends React.Component {
   constructor(){
     super();
     this.toast = null;
+    this.fetchData = this.fetchData.bind(this);
     this.state = {
       data: [],
       isLoading: false,
@@ -35,7 +36,18 @@ export default class AdminHome extends React.Component {
       //this.props.isLoading(false)
     }
     else{
-      this.setState({isLoading: true})
+      this.fetchData()
+    }
+  }
+
+  componentWillReceiveProps(newProps){
+    if(newProps.refresh){
+      this.fetchData();
+    }
+  }
+
+  fetchData(){
+    this.setState({isLoading: true})
       fetch(config.SERVER_URI+'/getHomeData')
         .then(res => {
           if(!res.ok){
@@ -70,7 +82,6 @@ export default class AdminHome extends React.Component {
             }
           }})
         })
-    }
   }
 
   getRecentActivityIcon(type){
@@ -141,17 +152,7 @@ export default class AdminHome extends React.Component {
     return (
       <View style={styles.container}>
         <View style={{padding: 10, backgroundColor:'#fff', justifyContent: 'center', alignItems: 'center'}}>
-        <VictoryPie
-            data={[
-              { x: "Cats", y: 35 },
-              { x: "Dogs", y: 40 },
-              { x: "Birds", y: 55 }
-            ]}
-            animate={{duration: 2000}}
-            colorScale={["tomato", "navy", "orange"]}
-            labelRadius={90}
-            style={{labels: {fill: '#fff'}}}  
-          />
+        
         </View>
         <Card>
           <CardItem header>
