@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Dimensions } from 'react-native';
-import { 
+import {
   Container,
   Icon,
   Button,
@@ -16,7 +16,7 @@ import Volunteers from './../Components/volunteers';
 import AdminHome from './../Components/adminHome';
 import RecentActivity from './../Components/recentActivity';
 import Participants from './../Components/Participants';
-import Events from './../Components/events';
+import EventsList from './../Components/events';
 let GLOBALS = require('./../globals');
 
 export default class HomeScreen extends React.Component {
@@ -26,7 +26,7 @@ export default class HomeScreen extends React.Component {
     this.isLoading = this.isLoading.bind(this);
     this.state = {
       tabs: [styles.active, styles.inactive, styles.inactive, styles.inactive, styles.inactive],
-      tabsText: [styles.tabTextActive, styles.tabsTextInactive, 
+      tabsText: [styles.tabTextActive, styles.tabsTextInactive,
         styles.tabsTextInactive, styles.tabsTextInactive, styles.tabsTextInactive],
       appBarTitle: 'Verve 2018',
       icon: 'more',
@@ -49,7 +49,7 @@ export default class HomeScreen extends React.Component {
       case 0:
         this.setState({
           tabs: [styles.active, styles.inactive, styles.inactive, styles.inactive, styles.inactive],
-          tabsText: [styles.tabTextActive, styles.tabsTextInactive, 
+          tabsText: [styles.tabTextActive, styles.tabsTextInactive,
             styles.tabsTextInactive, styles.tabsTextInactive, styles.tabsTextInactive],
           appBarTitle: 'Verve 2018',
           icon: 'more',
@@ -60,10 +60,10 @@ export default class HomeScreen extends React.Component {
       case 1:
         this.setState({
           tabs: [styles.inactive, styles.active, styles.inactive, styles.inactive, styles.inactive],
-          tabsText: [styles.tabsTextInactive, styles.tabTextActive, 
+          tabsText: [styles.tabsTextInactive, styles.tabTextActive,
             styles.tabsTextInactive, styles.tabsTextInactive, styles.tabsTextInactive],
           appBarTitle: 'Events',
-          icon: 'search',
+          icon: 'none',
           right: 'refresh',
           active: 1
         });
@@ -71,7 +71,7 @@ export default class HomeScreen extends React.Component {
       case 2:
         this.setState({
           tabs: [styles.inactive, styles.inactive, styles.active, styles.inactive, styles.inactive],
-          tabsText: [styles.tabsTextInactive, styles.tabsTextInactive, 
+          tabsText: [styles.tabsTextInactive, styles.tabsTextInactive,
             styles.tabTextActive, styles.tabsTextInactive, styles.tabsTextInactive],
           appBarTitle: 'People',
           icon: 'search',
@@ -83,7 +83,7 @@ export default class HomeScreen extends React.Component {
       case 3:
         this.setState({
           tabs: [styles.inactive, styles.inactive, styles.inactive, styles.active, styles.inactive],
-          tabsText: [styles.tabsTextInactive, styles.tabsTextInactive, 
+          tabsText: [styles.tabsTextInactive, styles.tabsTextInactive,
             styles.tabsTextInactive, styles.tabTextActive, styles.tabsTextInactive],
           appBarTitle: 'Recent Activity',
           icon: 'none',
@@ -94,7 +94,7 @@ export default class HomeScreen extends React.Component {
       case 4:
         this.setState({
           tabs: [styles.inactive, styles.inactive, styles.inactive, styles.inactive, styles.active],
-          tabsText: [styles.tabsTextInactive, styles.tabsTextInactive, 
+          tabsText: [styles.tabsTextInactive, styles.tabsTextInactive,
             styles.tabsTextInactive, styles.tabsTextInactive, styles.tabTextActive],
           appBarTitle: 'About',
           icon: 'none',
@@ -135,7 +135,7 @@ export default class HomeScreen extends React.Component {
       content = <Content><AdminHome navigation={this.props.navigation} refresh={this.state.refresh0}/></Content>
 
     if (this.state.tabs[1] === styles.active)
-      content = <Content><Events navigation={this.props.navigation} refresh={this.state.refresh1}/></Content>
+      content = <Content><EventsList navigation={this.props.navigation} refresh={this.state.refresh1}/></Content>
 
     if (this.state.tabs[2] === styles.active)
       content= <Tabs>
@@ -153,7 +153,7 @@ export default class HomeScreen extends React.Component {
                   </Content>
                 </Tab>
               </Tabs>
-    
+
     if(this.state.tabs[3] === styles.active)
       content= <Content><RecentActivity navigation={this.props.navigation} refresh={this.state.refresh3}/></Content>
 
@@ -165,7 +165,7 @@ export default class HomeScreen extends React.Component {
         <AppBar title={this.state.appBarTitle} left='none' right={this.state.right}
          icon={this.state.icon} hasTabs={this.state.hasTabs} active={this.state.active}
          navigation = {this.props.navigation} refresh={(e) => this.handleRefresh(e)}/>
-        
+
           {content}
         <Footer style={{borderTopColor: GLOBALS.primaryColorInactive, borderTopWidth: 0.2}}>
           <FooterTab style={styles.tabs}>
@@ -192,7 +192,7 @@ export default class HomeScreen extends React.Component {
           </FooterTab>
         </Footer>
       </Container>
-    )    
+    )
   }
 }
 
@@ -221,6 +221,7 @@ const styles = StyleSheet.create({
     color: GLOBALS.primaryColorInactive
   },
   tabStyle: {
-    backgroundColor: GLOBALS.primaryColor
+    backgroundColor: GLOBALS.primaryColor,
+    borderColor: '#fff'
   }
 });

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Stylesheet, StyleSheet } from 'react-native';
-import { 
+import {
   Container,
   Icon,
   Button,
@@ -15,6 +15,7 @@ import AppBar from './../Components/header';
 import SellPass from './../Components/sellPass';
 import Participants from './../Components/Participants';
 import VolunteerHome from './../Components/volunteerHome';
+import EventsList from './../Components/events';
 import About from './../Components/about';
 let GLOBALS = require('./../globals');
 
@@ -25,14 +26,15 @@ export default class VolunteerScreen extends React.Component {
     this.state = {
       appBarTitle: 'Verve 2018',
       tabs: [styles.active, styles.inactive, styles.inactive, styles.inactive, styles.inactive],
-      tabsText: [styles.tabTextActive, styles.tabsTextInactive, 
+      tabsText: [styles.tabTextActive, styles.tabsTextInactive,
         styles.tabsTextInactive, styles.tabsTextInactive, styles.tabsTextInactive],
       icon: 'more',
       right: 'refresh',
       active: 0,
       noShadow: true,
       refresh0: false,
-      refresh3: false 
+      refresh1: false,
+      refresh3: false
     }
   }
 
@@ -50,7 +52,7 @@ export default class VolunteerScreen extends React.Component {
       case 0:
         this.setState({
           tabs: [styles.active, styles.inactive, styles.inactive, styles.inactive, styles.inactive],
-          tabsText: [styles.tabTextActive, styles.tabsTextInactive, 
+          tabsText: [styles.tabTextActive, styles.tabsTextInactive,
             styles.tabsTextInactive, styles.tabsTextInactive, styles.tabsTextInactive],
           appBarTitle: 'Verve 2018',
           icon: 'more',
@@ -62,7 +64,7 @@ export default class VolunteerScreen extends React.Component {
       case 1:
         this.setState({
           tabs: [styles.inactive, styles.active, styles.inactive, styles.inactive, styles.inactive],
-          tabsText: [styles.tabsTextInactive, styles.tabTextActive, 
+          tabsText: [styles.tabsTextInactive, styles.tabTextActive,
             styles.tabsTextInactive, styles.tabsTextInactive, styles.tabsTextInactive],
           appBarTitle: 'Events',
           right: 'refresh',
@@ -74,7 +76,7 @@ export default class VolunteerScreen extends React.Component {
       case 2:
         this.setState({
           tabs: [styles.inactive, styles.inactive, styles.active, styles.inactive, styles.inactive],
-          tabsText: [styles.tabsTextInactive, styles.tabsTextInactive, 
+          tabsText: [styles.tabsTextInactive, styles.tabsTextInactive,
             styles.tabTextActive, styles.tabsTextInactive, styles.tabsTextInactive],
           appBarTitle: 'Sell Pass',
           icon: 'none',
@@ -86,7 +88,7 @@ export default class VolunteerScreen extends React.Component {
       case 3:
         this.setState({
           tabs: [styles.inactive, styles.inactive, styles.inactive, styles.active, styles.inactive],
-          tabsText: [styles.tabsTextInactive, styles.tabsTextInactive, 
+          tabsText: [styles.tabsTextInactive, styles.tabsTextInactive,
             styles.tabsTextInactive, styles.tabTextActive, styles.tabsTextInactive],
           appBarTitle: 'Participants',
           icon: 'search',
@@ -98,7 +100,7 @@ export default class VolunteerScreen extends React.Component {
       case 4:
         this.setState({
           tabs: [styles.inactive, styles.inactive, styles.inactive, styles.inactive, styles.active],
-          tabsText: [styles.tabsTextInactive, styles.tabsTextInactive, 
+          tabsText: [styles.tabsTextInactive, styles.tabsTextInactive,
             styles.tabsTextInactive, styles.tabsTextInactive, styles.tabTextActive],
           appBarTitle: 'About',
           icon: 'none',
@@ -113,6 +115,9 @@ export default class VolunteerScreen extends React.Component {
     switch(e){
       case 0:
         this.setState({refresh0: true});
+        break;
+      case 1:
+        this.setState({refresh1: true});
         break;
       case 3:
         this.setState({refresh3: true});
@@ -130,14 +135,14 @@ export default class VolunteerScreen extends React.Component {
         navigation={this.props.navigation}/>
 
     if (this.state.tabs[1] === styles.active)
-      content = <Text>Events</Text>
+      content = <Content><EventsList navigation={this.props.navigation} refresh={this.state.refresh1}/></Content>
 
     if (this.state.tabs[2] === styles.active)
       content = <SellPass navigation={this.props.navigation}/>
 
     if (this.state.tabs[3] === styles.active)
       content= <Participants navigation={this.props.navigation} refresh={this.state.refresh3}/>
-    
+
     if(this.state.tabs[4] === styles.active)
       content= <About />
 
@@ -159,7 +164,7 @@ export default class VolunteerScreen extends React.Component {
               <Icon name="apps" style={this.state.tabs[1]}/>
               <Text style={this.state.tabsText[1]}>Events</Text>
             </Button>
-            <Button vertical 
+            <Button vertical
               ref={2} onPress={() => this._handleTabTouch(2)}>
               <Icon name="create" style={this.state.tabs[2]}/>
               <Text style={this.state.tabsText[2]}>Sell</Text>

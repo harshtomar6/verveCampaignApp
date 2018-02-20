@@ -2,7 +2,6 @@ import React from 'react';
 import { View, StyleSheet, Image } from 'react-native';
 import { Text, Card, CardItem, Spinner, List, ListItem, Left, Thumbnail,
   Body, Right, Icon, Label, Toast } from 'native-base';
-import { VictoryPie } from 'victory-native';
 let GLOBALS = require('./../globals');
 const config = require('./../config');
 
@@ -129,10 +128,10 @@ export default class AdminHome extends React.Component {
         <Text style={styles.info}>{this.state.data.summary.totalVolunteersRegistered}</Text>
       </Body>
 
-    let recentActivity = this.state.isLoading ? <Spinner color={GLOBALS.primaryColorDark} />: 
+    let recentActivity = this.state.isLoading ? <Spinner color={GLOBALS.primaryColorDark} />:
       this.state.errLoading ? <Text>Err Loading</Text>:
       <List dataArray={this.state.data.recentActivity}
-        renderRow={(item) => 
+        renderRow={(item) =>
           <ListItem button avatar
             onPress={() => this.activityPress(item.owner.id, item.owner.name)}>
             <Left>
@@ -140,7 +139,7 @@ export default class AdminHome extends React.Component {
             </Left>
             <Body>
               <Text>{item.description}</Text>
-              <Text note>{new Date(item.time).toDateString()},&nbsp; 
+              <Text note>{new Date(item.time).toDateString()},&nbsp;
                 {new Date(item.time).toTimeString().split('GMT')[0]}
               </Text>
             </Body>
@@ -152,7 +151,7 @@ export default class AdminHome extends React.Component {
     return (
       <View style={styles.container}>
         <View style={{padding: 10, backgroundColor:'#fff', justifyContent: 'center', alignItems: 'center'}}>
-        
+
         </View>
         <Card>
           <CardItem header>

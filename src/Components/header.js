@@ -18,7 +18,7 @@ let GLOBALS = require('./../globals');
 let config = require('./../config');
 
 export default class AppBar extends React.Component{
-  
+
   constructor(){
     super();
     this.actionSheet = null;
@@ -70,7 +70,7 @@ export default class AppBar extends React.Component{
         }
       })
     }
-    
+
     if(this.props.icon === 'search'){
       if(this.state.userType === 'Admin')
         this.props.navigation.navigate('volunteerSearch');
@@ -110,37 +110,37 @@ export default class AppBar extends React.Component{
   }
 
   render(){
-    
+
     let leftIcon = this.props.left === 'none' ? <Text /> :
     <Left>
       <Button transparent rounded
         onPress={this.handleLeftPress.bind(this)}>
         <Icon name={this.props.left} style={{color: '#fff'}}/>
       </Button>
-    </Left> 
+    </Left>
 
-    let icon = this.props.icon === 'none' && this.props.right==='none' ? <Right /> : 
+    let icon = this.props.icon === 'none' && this.props.right==='none' ? <Right /> :
     <Right>
-      {this.props.right === 'none' ? <Text />: 
+      {this.props.right === 'none' ? <Text />:
         <Button transparent rounded
           onPress={this.handleRightPress.bind(this)}>
           <Icon name={this.props.right} style={{color: '#fff'}}/>
         </Button>
       }
-      {this.props.icon === 'none' ? <Text />: 
+      {this.props.icon === 'none' ? <Text />:
         <Button transparent rounded
           onPress={this.handlePress.bind(this)}>
           <Icon name={this.props.icon} style={{color: '#fff'}}/>
         </Button>
       }
-    </Right> 
+    </Right>
 
     return (
       <Header androidStatusBarColor={GLOBALS.primaryColorDark} style={styles.header}
         noShadow={this.props.noShadow} hasTabs={this.props.hasTabs}>
           {leftIcon}
           <Body>
-            <Title>{this.props.title}</Title>
+            <Title style={{color: '#fff'}}>{this.props.title}</Title>
           </Body>
           {icon}
           <ActionSheet ref={(c) => { this.actionSheet = c; }} />

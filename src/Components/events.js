@@ -1,10 +1,10 @@
 import React from 'react';
 import { View ,StyleSheet} from 'react-native';
-import { List, ListItem ,Seperator, Text, Spinner, Toast, Left, Body, Thumbnail, Right, Icon} from 'native-base';
+import { List, ListItem ,Separator, Text, Spinner, Toast, Left, Body, Thumbnail, Right, Icon} from 'native-base';
 let config = require('./../config');
 let GLOBALS = require('./../globals');
 
-export default class Events extends React.Component {
+export default class EventsList extends React.Component {
 
   constructor(){
     super();
@@ -14,7 +14,13 @@ export default class Events extends React.Component {
       isLoading: false,
       data: [],
       mainStageEvents: [],
-      technicalEvents: []
+      technicalEvents: [],
+      funEvents: [],
+      sportsEvents: [],
+      creativeEvents: [],
+      gamingEvents: [],
+      brainstormEvents: [],
+      musicalEvents: []
     }
   }
 
@@ -52,7 +58,7 @@ export default class Events extends React.Component {
         }
         GLOBALS.events = JSON.parse(res._bodyText).data
         this.setState({data: JSON.parse(res._bodyText).data}, () => {
-          //this.categorizeData(this.state.data)
+          this.categorizeData(this.state.data)
         })
       })
       .catch(err => {
@@ -76,22 +82,65 @@ export default class Events extends React.Component {
 
   categorizeData(data){
     this.setState({
-      mainStageEvents: data.filter(() => {return data.type === 'Main Stage Events'}),
-      technicalEvents: data.filter(() => {return data.type === 'Technical Events'})
+      mainStageEvents: data.filter((d) => {return d.type === 'Main Stage Events'}),
+      technicalEvents: data.filter((d) => {return d.type === 'Technical Events'}),
+      musicalEvents: data.filter((d) => {return d.type === 'Musical Events'}),
+      brainstormEvents: data.filter((d) => {return d.type === 'Brainstorm Events'}),
+      gamingEvents: data.filter((d) => {return d.type === 'Gaming Events'}),
+      creativeEvents: data.filter((d) => {return d.type === 'Creative Events'}),
+      sportsEvents: data.filter((d) => {return d.type === 'Sports Events'}),
+      funEvents: data.filter((d) => {return d.type === 'Fun Events'}),
     })
   }
 
   render(){
-    let showSpinner = this.state.isLoading ? <Spinner color={GLOBALS.primaryColorDark} />: <Text></Text>
-    return (
-      <View style={styles.container}>
-        {showSpinner}
-          <Seperator bordered>
-            <Text>Main Stage Events</Text>
-          </Seperator>
-          <List dataArray={this.state.mainStageEvents}
-          renderRow={item => 
-            <ListItem button avatar 
+    let list = <View>
+      <Separator bordered>
+        <Text>Main Stage Events</Text>
+      </Separator>
+      <List dataArray={this.state.mainStageEvents}
+      renderRow={item =>
+        <ListItem button avatar
+          onPress={() => this.handlePress(item.id, item.name, item._id)}>
+          <Left>
+            <Thumbnail style={{width: 45, height: 45}} source={require('./../7.png')} />
+          </Left>
+          <Body>
+            <Text>{item.name}</Text>
+            <Text note>No per Team: {item.team}</Text>
+            <Text note>Ticket Price: &#8377;{item.ticket}</Text>
+          </Body>
+          <Right>
+            <Icon name="arrow-forward"></Icon>
+          </Right>
+        </ListItem>
+        }></List>
+        <Separator bordered>
+          <Text>Technical Events</Text>
+        </Separator>
+        <List dataArray={this.state.technicalEvents}
+        renderRow={item =>
+          <ListItem button avatar
+            onPress={() => this.handlePress(item.id, item.name, item._id)}>
+            <Left>
+              <Thumbnail style={{width: 45, height: 45}} source={require('./../7.png')} />
+            </Left>
+            <Body>
+              <Text>{item.name}</Text>
+              <Text note>No per Team: {item.team}</Text>
+              <Text note>Ticket Price: &#8377;{item.ticket}</Text>
+            </Body>
+            <Right>
+              <Icon name="arrow-forward"></Icon>
+            </Right>
+          </ListItem>
+          }></List>
+          <Separator bordered>
+            <Text>Musical Events</Text>
+          </Separator>
+          <List dataArray={this.state.musicalEvents}
+          renderRow={item =>
+            <ListItem button avatar
               onPress={() => this.handlePress(item.id, item.name, item._id)}>
               <Left>
                 <Thumbnail style={{width: 45, height: 45}} source={require('./../7.png')} />
@@ -104,8 +153,117 @@ export default class Events extends React.Component {
               <Right>
                 <Icon name="arrow-forward"></Icon>
               </Right>
-            </ListItem>  
+            </ListItem>
             }></List>
+          <Separator bordered>
+            <Text>Brainstorm Events</Text>
+          </Separator>
+          <List dataArray={this.state.brainstormEvents}
+          renderRow={item =>
+            <ListItem button avatar
+              onPress={() => this.handlePress(item.id, item.name, item._id)}>
+              <Left>
+                <Thumbnail style={{width: 45, height: 45}} source={require('./../7.png')} />
+              </Left>
+              <Body>
+                <Text>{item.name}</Text>
+                <Text note>No per Team: {item.team}</Text>
+                <Text note>Ticket Price: &#8377;{item.ticket}</Text>
+              </Body>
+              <Right>
+                <Icon name="arrow-forward"></Icon>
+              </Right>
+            </ListItem>
+            }></List>
+            <Separator bordered>
+              <Text>Gaming Events</Text>
+            </Separator>
+            <List dataArray={this.state.gamingEvents}
+            renderRow={item =>
+              <ListItem button avatar
+                onPress={() => this.handlePress(item.id, item.name, item._id)}>
+                <Left>
+                  <Thumbnail style={{width: 45, height: 45}} source={require('./../7.png')} />
+                </Left>
+                <Body>
+                  <Text>{item.name}</Text>
+                  <Text note>No per Team: {item.team}</Text>
+                  <Text note>Ticket Price: &#8377;{item.ticket}</Text>
+                </Body>
+                <Right>
+                  <Icon name="arrow-forward"></Icon>
+                </Right>
+              </ListItem>
+              }></List>
+              <Separator bordered>
+                <Text>Creative Events</Text>
+              </Separator>
+              <List dataArray={this.state.creativeEvents}
+              renderRow={item =>
+                <ListItem button avatar
+                  onPress={() => this.handlePress(item.id, item.name, item._id)}>
+                  <Left>
+                    <Thumbnail style={{width: 45, height: 45}} source={require('./../7.png')} />
+                  </Left>
+                  <Body>
+                    <Text>{item.name}</Text>
+                    <Text note>No per Team: {item.team}</Text>
+                    <Text note>Ticket Price: &#8377;{item.ticket}</Text>
+                  </Body>
+                  <Right>
+                    <Icon name="arrow-forward"></Icon>
+                  </Right>
+                </ListItem>
+                }></List>
+                <Separator bordered>
+                  <Text>Sports Events</Text>
+                </Separator>
+                <List dataArray={this.state.sportsEvents}
+                renderRow={item =>
+                  <ListItem button avatar
+                    onPress={() => this.handlePress(item.id, item.name, item._id)}>
+                    <Left>
+                      <Thumbnail style={{width: 45, height: 45}} source={require('./../7.png')} />
+                    </Left>
+                    <Body>
+                      <Text>{item.name}</Text>
+                      <Text note>No per Team: {item.team}</Text>
+                      <Text note>Ticket Price: &#8377;{item.ticket}</Text>
+                    </Body>
+                    <Right>
+                      <Icon name="arrow-forward"></Icon>
+                    </Right>
+                  </ListItem>
+                  }></List>
+                  <Separator bordered>
+                    <Text>Fun Events</Text>
+                  </Separator>
+                  <List dataArray={this.state.funEvents}
+                  renderRow={item =>
+                    <ListItem button avatar
+                      onPress={() => this.handlePress(item.id, item.name, item._id)}>
+                      <Left>
+                        <Thumbnail style={{width: 45, height: 45}} source={require('./../7.png')} />
+                      </Left>
+                      <Body>
+                        <Text>{item.name}</Text>
+                        <Text note>No per Team: {item.team}</Text>
+                        <Text note>Ticket Price: &#8377;{item.ticket}</Text>
+                      </Body>
+                      <Right>
+                        <Icon name="arrow-forward"></Icon>
+                      </Right>
+                    </ListItem>
+                    }></List>
+        </View>
+    let showSpinner = this.state.isLoading ? <Spinner color={GLOBALS.primaryColorDark} />: list
+    return (
+      <View style={styles.container}>
+
+        <View style={{backgroundColor: '#fff', padding: 10}}>
+          <Text>Total Events: {this.state.data.length > 0 ? this.state.data.length: '-'}</Text>
+        </View>
+        {showSpinner}
           <Toast ref={c => {this.toast = c;}} />
       </View>
     );
