@@ -5,6 +5,7 @@ module.exports = {
   volunteerList : [],
   participantList: [],
   recentActivityFull: [],
+  events: [],
   primaryColor: '#393C83',
   primaryColorDark: '#2A2B5F',
   primaryErrColor: '#dc3545',

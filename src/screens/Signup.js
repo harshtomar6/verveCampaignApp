@@ -207,7 +207,7 @@ export default class Signup extends React.Component {
         </View>
         <View style={styles.overlay} />
         <View style={styles.col1}>
-          <Text style={styles.heading}>VERVE 2018</Text>
+        <Image style={styles.logo} source={require('./../main_logo.png')} />
         </View>
         <View style={styles.col2}>
           <Form>
@@ -297,6 +297,11 @@ const styles = StyleSheet.create({
     height: '100%',
     backgroundColor: '#000',
     opacity: 0.6
+  },
+  logo:{
+    width: '100%',
+    height: 120,
+    resizeMode: 'contain'
   },
   col1:{
     flex: 1,

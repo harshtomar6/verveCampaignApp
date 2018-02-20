@@ -16,6 +16,7 @@ import Volunteers from './../Components/volunteers';
 import AdminHome from './../Components/adminHome';
 import RecentActivity from './../Components/recentActivity';
 import Participants from './../Components/Participants';
+import Events from './../Components/events';
 let GLOBALS = require('./../globals');
 
 export default class HomeScreen extends React.Component {
@@ -33,6 +34,7 @@ export default class HomeScreen extends React.Component {
       right: 'refresh',
       active: 0,
       refresh0: false,
+      refresh1: false,
       refresh2: false,
       refresh3: false
     }
@@ -61,8 +63,8 @@ export default class HomeScreen extends React.Component {
           tabsText: [styles.tabsTextInactive, styles.tabTextActive, 
             styles.tabsTextInactive, styles.tabsTextInactive, styles.tabsTextInactive],
           appBarTitle: 'Events',
-          icon: 'none',
-          right: 'none',
+          icon: 'search',
+          right: 'refresh',
           active: 1
         });
         break;
@@ -111,6 +113,9 @@ export default class HomeScreen extends React.Component {
       case 0:
         this.setState({refresh0: true});
         break;
+      case 1:
+        this.setState({refresh1: true});
+        break;
       case 2:
         this.setState({refresh2: true});
         break;
@@ -130,7 +135,7 @@ export default class HomeScreen extends React.Component {
       content = <Content><AdminHome navigation={this.props.navigation} refresh={this.state.refresh0}/></Content>
 
     if (this.state.tabs[1] === styles.active)
-      content = <Content><Text>Hello</Text></Content>
+      content = <Content><Events navigation={this.props.navigation} refresh={this.state.refresh1}/></Content>
 
     if (this.state.tabs[2] === styles.active)
       content= <Tabs>
@@ -144,7 +149,7 @@ export default class HomeScreen extends React.Component {
                 <Tab heading="Participants" tabStyle={styles.tabStyle}
                   activeTabStyle={styles.tabStyle}>
                   <Content>
-                    <Participants navigation={this.props.navigation} type='admin' refresh={this.state.refresh2}/>
+                    <Participants navigation={this.props.navigation} type='admin' />
                   </Content>
                 </Tab>
               </Tabs>

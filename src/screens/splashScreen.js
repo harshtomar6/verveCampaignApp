@@ -3,6 +3,7 @@ import { StyleSheet, View, StatusBar, Image, AsyncStorage } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import { Text } from 'native-base';
 const remote = require('./../splash-back.jpg');
+const logoURI = require('./../main_logo.png');
 
 export default class Splash extends React.Component {
   
@@ -49,7 +50,9 @@ export default class Splash extends React.Component {
           <Image style={styles.image} source={remote} />
         </View>
         <View style={styles.overlay} />
-        <Text style={styles.text}>VERVE 2018</Text>
+        <View style={styles.logoContainer}>
+          <Image style={styles.logo} source={logoURI} />
+        </View>
       </View>
     );
   }
@@ -73,6 +76,21 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: 'cover'
   },
+  logoContainer:{
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    backgroundColor: 'transparent',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  logo: {
+    width: '100%',
+    height: 250,
+    resizeMode: 'stretch'
+  },
   overlay : {
     position: 'absolute',
     top: 0,
@@ -80,7 +98,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     backgroundColor: '#000',
-    opacity: 0.7
+    opacity: 0.6
   },
   text: {
     color: '#fff',
