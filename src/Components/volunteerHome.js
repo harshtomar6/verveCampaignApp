@@ -165,8 +165,8 @@ const styles = StyleSheet.create({
   },
   rowContainer: {
     backgroundColor: '#fff',
-    shadowColor:'#000000',
-    shadowOffset: {width: 1, height: 10},
+    shadowColor:'rgba(0, 0, 0, 0.2)',
+    shadowOffset: {width: 1, height: 2},
     shadowRadius: 5,
     shadowOpacity: 1.0,
     elevation: 5,

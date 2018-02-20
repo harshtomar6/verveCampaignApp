@@ -36,7 +36,8 @@ export default class HomeScreen extends React.Component {
       refresh0: false,
       refresh1: false,
       refresh2: false,
-      refresh3: false
+      refresh3: false,
+      noShadow: false
     }
   }
 
@@ -54,7 +55,8 @@ export default class HomeScreen extends React.Component {
           appBarTitle: 'Verve 2018',
           icon: 'more',
           right: 'refresh',
-          active: 0
+          active: 0,
+          noShadow: false
         });
         break;
       case 1:
@@ -65,7 +67,8 @@ export default class HomeScreen extends React.Component {
           appBarTitle: 'Events',
           icon: 'none',
           right: 'refresh',
-          active: 1
+          active: 1,
+          noShadow:true
         });
         break;
       case 2:
@@ -77,7 +80,8 @@ export default class HomeScreen extends React.Component {
           icon: 'search',
           hasTabs: true,
           right: 'refresh',
-          active: 2
+          active: 2,
+          noShadow: false
         });
         break;
       case 3:
@@ -88,7 +92,8 @@ export default class HomeScreen extends React.Component {
           appBarTitle: 'Recent Activity',
           icon: 'none',
           right: 'refresh',
-          active: 3
+          active: 3,
+          noShadow: false
         })
         break;
       case 4:
@@ -99,7 +104,8 @@ export default class HomeScreen extends React.Component {
           appBarTitle: 'About',
           icon: 'none',
           right: 'none',
-          active: 4
+          active: 4,
+          noShadow: false
         })
     }
   }
@@ -164,7 +170,8 @@ export default class HomeScreen extends React.Component {
       <Container>
         <AppBar title={this.state.appBarTitle} left='none' right={this.state.right}
          icon={this.state.icon} hasTabs={this.state.hasTabs} active={this.state.active}
-         navigation = {this.props.navigation} refresh={(e) => this.handleRefresh(e)}/>
+         navigation = {this.props.navigation} refresh={(e) => this.handleRefresh(e)}
+         noShadow={this.state.noShadow}/>
 
           {content}
         <Footer style={{borderTopColor: GLOBALS.primaryColorInactive, borderTopWidth: 0.2}}>

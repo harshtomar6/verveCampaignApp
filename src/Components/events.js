@@ -96,7 +96,7 @@ export default class EventsList extends React.Component {
   render(){
     let list = <View>
       <Separator bordered>
-        <Text>Main Stage Events</Text>
+        <Text style={styles.title}>Main Stage Events</Text>
       </Separator>
       <List dataArray={this.state.mainStageEvents}
       renderRow={item =>
@@ -116,7 +116,7 @@ export default class EventsList extends React.Component {
         </ListItem>
         }></List>
         <Separator bordered>
-          <Text>Technical Events</Text>
+          <Text style={styles.title}>Technical Events</Text>
         </Separator>
         <List dataArray={this.state.technicalEvents}
         renderRow={item =>
@@ -136,7 +136,7 @@ export default class EventsList extends React.Component {
           </ListItem>
           }></List>
           <Separator bordered>
-            <Text>Musical Events</Text>
+            <Text style={styles.title}>Musical Events</Text>
           </Separator>
           <List dataArray={this.state.musicalEvents}
           renderRow={item =>
@@ -156,7 +156,7 @@ export default class EventsList extends React.Component {
             </ListItem>
             }></List>
           <Separator bordered>
-            <Text>Brainstorm Events</Text>
+            <Text style={styles.title}>Brainstorm Events</Text>
           </Separator>
           <List dataArray={this.state.brainstormEvents}
           renderRow={item =>
@@ -176,7 +176,7 @@ export default class EventsList extends React.Component {
             </ListItem>
             }></List>
             <Separator bordered>
-              <Text>Gaming Events</Text>
+              <Text style={styles.title}>Gaming Events</Text>
             </Separator>
             <List dataArray={this.state.gamingEvents}
             renderRow={item =>
@@ -196,7 +196,7 @@ export default class EventsList extends React.Component {
               </ListItem>
               }></List>
               <Separator bordered>
-                <Text>Creative Events</Text>
+                <Text style={styles.title}>Creative Events</Text>
               </Separator>
               <List dataArray={this.state.creativeEvents}
               renderRow={item =>
@@ -216,7 +216,7 @@ export default class EventsList extends React.Component {
                 </ListItem>
                 }></List>
                 <Separator bordered>
-                  <Text>Sports Events</Text>
+                  <Text style={styles.title}>Sports Events</Text>
                 </Separator>
                 <List dataArray={this.state.sportsEvents}
                 renderRow={item =>
@@ -236,7 +236,7 @@ export default class EventsList extends React.Component {
                   </ListItem>
                   }></List>
                   <Separator bordered>
-                    <Text>Fun Events</Text>
+                    <Text style={styles.title}>Fun Events</Text>
                   </Separator>
                   <List dataArray={this.state.funEvents}
                   renderRow={item =>
@@ -260,8 +260,8 @@ export default class EventsList extends React.Component {
     return (
       <View style={styles.container}>
 
-        <View style={{backgroundColor: '#fff', padding: 10}}>
-          <Text>Total Events: {this.state.data.length > 0 ? this.state.data.length: '-'}</Text>
+        <View style={styles.miniContainer}>
+          <Text style={{color: '#fff', fontWeight: '800', fontSize: 22}}>Total Events: {this.state.data.length > 0 ? this.state.data.length: '-'}</Text>
         </View>
         {showSpinner}
           <Toast ref={c => {this.toast = c;}} />
@@ -275,5 +275,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff'
+  },
+  miniContainer: {
+    backgroundColor: GLOBALS.primaryColor,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 40,
+    paddingTop: 20,
+  },
+  title: {
+    color: GLOBALS.primaryColor,
+    margin: 10,
+    fontSize: 14
   }
 });
