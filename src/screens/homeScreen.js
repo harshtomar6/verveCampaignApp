@@ -148,14 +148,14 @@ export default class HomeScreen extends React.Component {
                 <Tab heading="Volunteers" tabStyle={styles.tabStyle}
                   activeTabStyle={styles.tabStyle}>
                   <Content>
-                  <Volunteers navigation={this.props.navigation} isLoading={this.isLoading}
+                  <Volunteers navigation={this.props.navigation} 
                         refresh={this.state.refresh2} />
                   </Content>
                 </Tab>
                 <Tab heading="Participants" tabStyle={styles.tabStyle}
                   activeTabStyle={styles.tabStyle}>
                   <Content>
-                    <Participants navigation={this.props.navigation} type='admin' />
+                    <Participants navigation={this.props.navigation} type='admin' refresh={this.state.refresh2}/>
                   </Content>
                 </Tab>
               </Tabs>

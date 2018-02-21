@@ -54,7 +54,7 @@ export default class Volunteers extends React.Component {
           }
           GLOBALS.volunteerList = JSON.parse(res._bodyText).data
           this.setState({data: JSON.parse(res._bodyText).data})
-          this.props.isLoading(false)
+          //this.props.isLoading(false)
         })
         .catch(err => {
           this.setState({isLoading: false})

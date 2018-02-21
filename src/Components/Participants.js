@@ -43,7 +43,8 @@ export default class Participants extends React.Component {
   }
 
   fetchData(){
-    if(this.props.type === 'admin')
+    if(this.props.type === 'admin'){
+      this.setState({isLoading: true})
       fetch(config.SERVER_URI+'/getParticipants')
         .then(res => {
           this.setState({isLoading: false})
@@ -75,7 +76,9 @@ export default class Participants extends React.Component {
             }
           }})
         })
-      else
+      }
+      else{
+      this.setState({isLoading: true})
       fetch(config.SERVER_URI+'/getVolunteerParticipants', {
         method: 'post',
         headers: {'Content-Type': 'application/json'},
@@ -113,14 +116,17 @@ export default class Participants extends React.Component {
             }
           }})
         })
+      }
   }
 
-  handlePress(participantId, participantName, _id){
+  handlePress(participantId, participantName, _id, eventsRegistered, eventsAttended){
     const { navigate } = this.props.navigation;
     navigate('participantDetails', {
       participantId,
       participantName,
-      _id
+      _id,
+      eventsRegistered,
+      eventsAttended
     })
   }
   
@@ -132,13 +138,17 @@ export default class Participants extends React.Component {
           <List dataArray={this.state.data}
           renderRow={item => 
             <ListItem button avatar 
-              onPress={() => this.handlePress(item.id, item.name, item._id)}>
+              onPress={() => this.handlePress(item.id, item.name, item._id, item.eventsRegistered.length, item.eventsAttended)}>
               <Left>
                 <Thumbnail style={{width: 45, height: 45}} source={require('./../participant.png')} />
               </Left>
               <Body>
                 <Text>{item.name}</Text>
-                <Text note>Event: {item.event}</Text>
+                <Text note>Events Registered: {item.eventsRegistered.length}</Text>
+                <Text note>
+                  Events Attended: {item.eventsAttended.length > 1 ? item.eventsAttended.length : 
+                    item.eventsAttended[0] === 'none' ? '0': '1'}
+                </Text>
               </Body>
               <Right>
                 <Icon name="arrow-forward"></Icon>

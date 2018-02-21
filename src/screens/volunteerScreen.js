@@ -70,7 +70,7 @@ export default class VolunteerScreen extends React.Component {
           right: 'refresh',
           icon: 'none',
           active: 1,
-          noShadow: false
+          noShadow: true
         });
         break;
       case 2:

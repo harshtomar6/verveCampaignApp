@@ -13,7 +13,7 @@ export default class ParticipantDetails extends React.Component {
     this.toast = null;
     this.state = {
       data: '',
-      isLoading: false,
+      isLoading: true,
       participantId: ''
     }
   }
@@ -22,9 +22,7 @@ export default class ParticipantDetails extends React.Component {
     this.setState({
       participantId: this.props.navigation.state.params.participantId
     })
-  }
 
-  componentDidMount(){
     this.setState({isLoading: true})
     fetch(config.SERVER_URI+'/getParticipantDetails', {
       method: 'post',
@@ -32,8 +30,8 @@ export default class ParticipantDetails extends React.Component {
       body: JSON.stringify({id: this.props.navigation.state.params.participantId})
     })
       .then(res => {
-        this.setState({isLoading: false})
         if(!res.ok){
+          this.setState({isLoading: false})
           if(this.toast !== null)
           return this.toast._root.showToast({
             text: JSON.parse(res._bodyText).err,
@@ -46,7 +44,9 @@ export default class ParticipantDetails extends React.Component {
           })
         }
         
-        this.setState({data: JSON.parse(res._bodyText).data})
+        this.setState({data: JSON.parse(res._bodyText).data}, () => {
+          this.setState({isLoading: false})
+        })
       })
       .catch(err => {
         alert(err)
@@ -75,6 +75,29 @@ export default class ParticipantDetails extends React.Component {
 
   render(){
     const {params} = this.props.navigation.state;
+    let eventsInfo = this.state.isLoading ? <Spinner color={GLOBALS.primaryColorDark} /> :
+      <CardItem>
+        <Body>
+          <Label>Events Registered</Label>
+          <View style={styles.rowLabel}>
+            {
+            this.state.data.eventsRegistered.map( item => 
+              <View style={styles.badge}>
+                <Text style={{color: '#fff', fontSize: 14}}>{item}</Text>
+              </View>
+            )}
+          </View>
+          <Label>Events Attended</Label>
+          <View style={styles.rowLabel}>
+            {
+            this.state.data.eventsAttended.map( item => 
+              <View style={styles.badge2}>
+                <Text style={{color: '#fff', fontSize: 14}}>{item}</Text>
+              </View>
+            )}
+          </View>
+        </Body>
+      </CardItem>
     let info = this.state.isLoading ? <Spinner color={GLOBALS.primaryColorDark} /> : 
       <CardItem>
         <Body>
@@ -120,12 +143,20 @@ export default class ParticipantDetails extends React.Component {
         <Content>
           <View style={styles.banner}>
             <Text style={styles.bannerText}>
-              {params.passesSold >= 0 ? params.passesSold : this.state.isLoading ? '-' : this.state.data.passesSold } 
+              {params.eventsRegistered >= 0 ? params.eventsRegistered : this.state.isLoading ? '-' : this.state.data.passesSold } 
                 &nbsp;Events Registered</Text>
             <Text style={{color: '#fff'}}>
-              {this.state.isLoading ? '-': this.state.data.passesAlloted} Events Attended
+              {params.eventsAttended.length > 1 ? params.eventsAttended.length: params.eventsAttended[0] === 'none'? 
+                '0': '1'} 
+                &nbsp;Events Attended
             </Text>
           </View>
+          <Card>
+            <CardItem header>
+              <Text style={{color: GLOBALS.primaryColor}}>EVENTS INFORMATION</Text>
+            </CardItem>
+            {eventsInfo}
+          </Card>
           <Card>
             <CardItem header>
               <Text style={{color: GLOBALS.primaryColor}}>OTHER INFORMATION</Text>
@@ -159,5 +190,24 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between'
+  },
+  rowLabel: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    flexWrap: 'wrap',
+    padding: 10
+  },
+  badge: {
+    padding: 10,
+    borderRadius: 20,
+    backgroundColor: '#FC4442',
+    margin: 5
+  },
+  badge2: {
+    padding: 10,
+    borderRadius: 20,
+    backgroundColor: GLOBALS.primaryColor,
+    margin: 5
   }
 })

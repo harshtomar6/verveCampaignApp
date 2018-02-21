@@ -154,7 +154,7 @@ export default class VolunteerSearch extends React.Component {
           <View style={{backgroundColor:'#fff'}}>
           <Separator bordered>
           <Text style={styles.title}>
-            {this.state.searchText === '' ? '' : 'Volunteers'}
+            {this.state.searchText === '' ? '' : 'Volunteers: ' +this.state.searchResultVolunteer.length}
           </Text>
           </Separator>
           <List dataArray={this.state.searchResultVolunteer}
@@ -175,7 +175,7 @@ export default class VolunteerSearch extends React.Component {
                }></List> 
             <Separator bordered>
             <Text style={styles.title}>
-              {this.state.searchText === '' ? '' : 'Participants'}
+              {this.state.searchText === '' ? '' : 'Participants: '+this.state.searchResultParticipant.length}
             </Text>
             </Separator>
             <List dataArray={this.state.searchResultParticipant}
@@ -187,7 +187,11 @@ export default class VolunteerSearch extends React.Component {
               </Left>
               <Body>
                 <Text>{item.name}</Text>
-                <Text note>Event: {item.event}</Text>
+                <Text note>Events Registered: {item.eventsRegistered.length}</Text>
+                <Text note>
+                  Events Attended: {item.eventsAttended.length > 1 ? item.eventsAttended.length : 
+                    item.eventsAttended[0] === 'none' ? '0': '1'}
+                </Text>
               </Body>
               <Right>
                 <Icon name="arrow-forward"></Icon>
