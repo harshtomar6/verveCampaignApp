@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet, Image, ScrollView, Dimensions } from 'react-native';
 import { Text, Card, CardItem, Spinner, List, ListItem, Left, Thumbnail,
   Body, Right, Icon, Label, Toast } from 'native-base';
+import Swiper from 'react-native-swiper';
 let GLOBALS = require('./../globals');
 const config = require('./../config');
 
@@ -120,12 +121,16 @@ export default class AdminHome extends React.Component {
     let summary = this.state.isLoading ? <Spinner color={GLOBALS.primaryColorDark} /> :
       this.state.errLoading ? <Text>Err Loading</Text>:
       <Body>
+        <Label>Total Collection</Label>
+        <Text style={styles.info}>&#8377;&nbsp;{this.state.data.summary.totalCollection}</Text>
         <Label>Total Passes Alloted</Label>
         <Text style={styles.info}>{this.state.data.summary.totalPassesAlloted}</Text>
         <Label>Total Passes Sold</Label>
         <Text style={styles.info}>{this.state.data.summary.totalPassesSold}</Text>
         <Label>Total Volunteers Registered</Label>
         <Text style={styles.info}>{this.state.data.summary.totalVolunteersRegistered}</Text>
+        <Label>Total Participants Registered</Label>
+        <Text style={styles.info}>{this.state.data.summary.totalParticipants}</Text>
       </Body>
 
     let recentActivity = this.state.isLoading ? <Spinner color={GLOBALS.primaryColorDark} />:
@@ -150,8 +155,43 @@ export default class AdminHome extends React.Component {
         }></List>
     return (
       <View style={styles.container}>
-        <View style={{padding: 10, backgroundColor:'#fff', justifyContent: 'center', alignItems: 'center'}}>
-
+        <View style={{backgroundColor:'#fff', height: Dimensions.get('window').height*0.3}}>
+          <ScrollView
+              horizontal
+              pagingEnabled
+              showsHorizontalScrollIndicator={false}
+            >
+              <View style={styles.slide1}>
+                <Text style={styles.bannerText}>Total Collection</Text>
+                <Text style={styles.bannerText}>
+                &#8377;&nbsp;{this.state.isLoading ? '-' : this.state.data.summary.totalCollection}
+                </Text>
+              </View>
+              <View style={styles.slide2}>
+              <Text style={styles.bannerText}>Total Participants</Text>
+                <Text style={styles.bannerText}>
+                  {this.state.isLoading ? '-' : this.state.data.summary.totalParticipants}
+                </Text>
+              </View>
+              <View style={styles.slide3}>
+                <Text style={styles.bannerText}>Total Volunteers</Text>
+                <Text style={styles.bannerText}>
+                  {this.state.isLoading ? '-' : this.state.data.summary.totalVolunteersRegistered}
+                </Text>
+              </View>
+              <View style={styles.slide3}>
+                <Text style={styles.bannerText}>Total Passes Sold</Text>
+                <Text style={styles.bannerText}>
+                  {this.state.isLoading ? '-' : this.state.data.summary.totalPassesSold}
+                </Text>
+              </View>
+              <View style={styles.slide3}>
+                <Text style={styles.bannerText}>Total Passes Alloted</Text>
+                <Text style={styles.bannerText}>
+                  {this.state.isLoading ? '-' : this.state.data.summary.totalPassesAlloted}
+                </Text>
+              </View>
+            </ScrollView>
         </View>
         <Card>
           <CardItem header>
@@ -201,5 +241,34 @@ const styles = StyleSheet.create({
     margin: 10,
     color: GLOBALS.primaryColorDark,
     fontWeight: '600'
+  },
+  slide1: {
+    flex: 1,
+    width: Dimensions.get('window').width,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: GLOBALS.primaryColor,
+  },
+  slide2: {
+    flex: 1,
+    width: Dimensions.get('window').width,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: GLOBALS.primaryColor,
+  },
+  slide3: {
+    flex: 1,
+    width: Dimensions.get('window').width,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: GLOBALS.primaryColor,
+  },
+  text: {
+    color: '#fff',
+    fontSize: 30,
+    fontWeight: 'bold',
+  },
+  iconForward: {
+    color: '#fff'
   }
 })

@@ -28,7 +28,7 @@ export default class HomeScreen extends React.Component {
       tabs: [styles.active, styles.inactive, styles.inactive, styles.inactive, styles.inactive],
       tabsText: [styles.tabTextActive, styles.tabsTextInactive,
         styles.tabsTextInactive, styles.tabsTextInactive, styles.tabsTextInactive],
-      appBarTitle: 'Verve 2018',
+      appBarTitle: 'Verve 2018 - Admin',
       icon: 'more',
       isLoading: true,
       right: 'refresh',
@@ -37,7 +37,7 @@ export default class HomeScreen extends React.Component {
       refresh1: false,
       refresh2: false,
       refresh3: false,
-      noShadow: false
+      noShadow: true
     }
   }
 
@@ -52,11 +52,11 @@ export default class HomeScreen extends React.Component {
           tabs: [styles.active, styles.inactive, styles.inactive, styles.inactive, styles.inactive],
           tabsText: [styles.tabTextActive, styles.tabsTextInactive,
             styles.tabsTextInactive, styles.tabsTextInactive, styles.tabsTextInactive],
-          appBarTitle: 'Verve 2018',
+          appBarTitle: 'Verve 2018 - Admin',
           icon: 'more',
           right: 'refresh',
           active: 0,
-          noShadow: false
+          noShadow: true
         });
         break;
       case 1:

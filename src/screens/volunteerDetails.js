@@ -206,6 +206,13 @@ export default class VolunteerDetails extends React.Component {
   render(){
     const {params} = this.props.navigation.state;
     let infoColor = this.state.data.passesAlloted === 0 ? '#FC4442': GLOBALS.primaryColorDark
+    let moneyInfo = this.state.isLoading ? <Spinner color={GLOBALS.primaryColorDark} /> :
+      <CardItem>
+          <View style={{flex: 1,alignItems: 'center', justifyContent: 'center'}}>
+            <Text style={{color: '#FC4442', fontSize: 26, fontWeight: '700', marginBottom: 20}}>
+              &#8377;&nbsp;{this.state.data.totalMoney}</Text>
+          </View>
+      </CardItem>
     let passesInfo = this.state.isLoading ? <Spinner color={GLOBALS.primaryColorDark} /> :
       <CardItem>
         <Body>
@@ -335,6 +342,12 @@ export default class VolunteerDetails extends React.Component {
               {this.state.isLoading ? '-': this.state.data.passesAlloted} Passes Alloted
             </Text>
           </View>
+          <Card>
+            <CardItem header>
+              <Text style={{color: GLOBALS.primaryColor}}>TOTAL CONTRIBUTION</Text>
+            </CardItem>
+            {moneyInfo}
+          </Card>
           <Card>
             <CardItem header>
               <Text style={{color: GLOBALS.primaryColor}}>PASSES INFORMATION</Text>
