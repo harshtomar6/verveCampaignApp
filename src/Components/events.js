@@ -76,8 +76,13 @@ export default class EventsList extends React.Component {
       })
   }
 
-  handlePress(){
-
+  handlePress(_id, name){
+    const { navigate } = this.props.navigation;
+    navigate('eventDetails', {
+      _id,
+      name,
+      type: this.props.type
+    })
   }
 
   categorizeData(data){
@@ -101,7 +106,7 @@ export default class EventsList extends React.Component {
       <List dataArray={this.state.mainStageEvents}
       renderRow={item =>
         <ListItem button avatar
-          onPress={() => this.handlePress(item.id, item.name, item._id)}>
+          onPress={() => this.handlePress(item._id, item.name)}>
           <Left>
             <Thumbnail style={{width: 45, height: 45}} source={require('./../7.png')} />
           </Left>
@@ -121,7 +126,7 @@ export default class EventsList extends React.Component {
         <List dataArray={this.state.technicalEvents}
         renderRow={item =>
           <ListItem button avatar
-            onPress={() => this.handlePress(item.id, item.name, item._id)}>
+            onPress={() => this.handlePress(item._id, item.name)}>
             <Left>
               <Thumbnail style={{width: 45, height: 45}} source={require('./../7.png')} />
             </Left>
@@ -141,7 +146,7 @@ export default class EventsList extends React.Component {
           <List dataArray={this.state.musicalEvents}
           renderRow={item =>
             <ListItem button avatar
-              onPress={() => this.handlePress(item.id, item.name, item._id)}>
+              onPress={() => this.handlePress(item._id, item.name)}>
               <Left>
                 <Thumbnail style={{width: 45, height: 45}} source={require('./../7.png')} />
               </Left>
@@ -161,7 +166,7 @@ export default class EventsList extends React.Component {
           <List dataArray={this.state.brainstormEvents}
           renderRow={item =>
             <ListItem button avatar
-              onPress={() => this.handlePress(item.id, item.name, item._id)}>
+              onPress={() => this.handlePress(item._id, item.name)}>
               <Left>
                 <Thumbnail style={{width: 45, height: 45}} source={require('./../7.png')} />
               </Left>
@@ -181,7 +186,7 @@ export default class EventsList extends React.Component {
             <List dataArray={this.state.gamingEvents}
             renderRow={item =>
               <ListItem button avatar
-                onPress={() => this.handlePress(item.id, item.name, item._id)}>
+                onPress={() => this.handlePress(item._id, item.name)}>
                 <Left>
                   <Thumbnail style={{width: 45, height: 45}} source={require('./../7.png')} />
                 </Left>
@@ -201,7 +206,7 @@ export default class EventsList extends React.Component {
               <List dataArray={this.state.creativeEvents}
               renderRow={item =>
                 <ListItem button avatar
-                  onPress={() => this.handlePress(item.id, item.name, item._id)}>
+                  onPress={() => this.handlePress(item._id, item.name)}>
                   <Left>
                     <Thumbnail style={{width: 45, height: 45}} source={require('./../7.png')} />
                   </Left>
@@ -221,7 +226,7 @@ export default class EventsList extends React.Component {
                 <List dataArray={this.state.sportsEvents}
                 renderRow={item =>
                   <ListItem button avatar
-                    onPress={() => this.handlePress(item.id, item.name, item._id)}>
+                    onPress={() => this.handlePress(item._id, item.name)}>
                     <Left>
                       <Thumbnail style={{width: 45, height: 45}} source={require('./../7.png')} />
                     </Left>
@@ -241,7 +246,7 @@ export default class EventsList extends React.Component {
                   <List dataArray={this.state.funEvents}
                   renderRow={item =>
                     <ListItem button avatar
-                      onPress={() => this.handlePress(item.id, item.name, item._id)}>
+                      onPress={() => this.handlePress(item._id, item.name)}>
                       <Left>
                         <Thumbnail style={{width: 45, height: 45}} source={require('./../7.png')} />
                       </Left>

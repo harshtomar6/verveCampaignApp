@@ -73,6 +73,15 @@ export default class ParticipantDetails extends React.Component {
     }).catch(err => alert(err))
   }
 
+  handleVolunteer(){
+    if(!this.state.isLoading){
+      const {navigate} = this.props.navigation;
+      navigate('volunteerDetails', {
+        volunteerId: this.state.data.ownerid
+      })
+    }
+  }
+
   render(){
     const {params} = this.props.navigation.state;
     let eventsInfo = this.state.isLoading ? <Spinner color={GLOBALS.primaryColorDark} /> :
@@ -162,6 +171,23 @@ export default class ParticipantDetails extends React.Component {
               <Text style={{color: GLOBALS.primaryColor}}>OTHER INFORMATION</Text>
             </CardItem>
             {info}
+          </Card>
+          <Card>
+            <CardItem header>
+              <Text style={{color: GLOBALS.primaryColor}}>ACTIONS</Text>
+            </CardItem>
+            <CardItem>
+              <Body>
+                {params.type === 'admin' ? <Button block primary onPress={this.handleVolunteer.bind(this)}>
+                  <Text>View Volunteer Details</Text>
+                </Button>: <Text/>}
+                <Text></Text>
+                <Text></Text>
+                <Button block danger >
+                  <Text>Validate</Text>
+                </Button>
+              </Body>
+            </CardItem>
           </Card>
         </Content>
       </Container>

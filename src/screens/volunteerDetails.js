@@ -273,8 +273,8 @@ export default class VolunteerDetails extends React.Component {
 
     return (
       <Container>
-        <AppBar title={params.volunteerName} left='arrow-back'
-          icon='none' navigation={this.props.navigation} noShadow />
+        <AppBar title={params.volunteerName ? params.volunteerName: this.state.isLoading ? '-': this.state.data.name} 
+          left='arrow-back' icon='none' navigation={this.props.navigation} noShadow />
         <Modal visible={this.state.modalVisible}
           onRequestClose={() => this.setState({modalVisible: false})}
           animationType={'fade'} transparent>
@@ -356,6 +356,7 @@ export default class VolunteerDetails extends React.Component {
               <Button block primary onPress={this.handleReset.bind(this)}>
                 <Text>Reset Alloted Passes</Text>
               </Button>
+              <Text></Text>
               <Text></Text>
               <Button block danger onPress={this.handleDelete.bind(this)}>
                 <Text>Block Volunteer</Text>

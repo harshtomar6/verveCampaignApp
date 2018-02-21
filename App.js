@@ -13,6 +13,8 @@ import VolunteerSearch from './src/screens/volunteerSearch';
 import ReviewSell from './src/screens/reviewSell';
 import ParticipantDetails from './src/screens/participantDetails';
 import ParticipantSearch from './src/screens/participantSearch';
+import EventDetails from './src/screens/eventDetails';
+import UpdateEvent from './src/screens/updateEvent';
 const config = require('./src/config');
 const GLOBALS = require('./src/globals');
 
@@ -26,7 +28,9 @@ const RootNavigator = StackNavigator({
   volunteerSearch: {screen: VolunteerSearch},
   reviewSell: {screen: ReviewSell},
   participantDetails: {screen: ParticipantDetails},
-  participantSearch: {screen: ParticipantSearch}
+  participantSearch: {screen: ParticipantSearch},
+  eventDetails: {screen: EventDetails},
+  updateEvent: {screen: UpdateEvent}
 },{
   headerMode: 'none',
   navigationOptions: {

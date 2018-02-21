@@ -126,7 +126,8 @@ export default class Participants extends React.Component {
       participantName,
       _id,
       eventsRegistered,
-      eventsAttended
+      eventsAttended,
+      type: this.props.type
     })
   }
   

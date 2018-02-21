@@ -141,7 +141,9 @@ export default class HomeScreen extends React.Component {
       content = <Content><AdminHome navigation={this.props.navigation} refresh={this.state.refresh0}/></Content>
 
     if (this.state.tabs[1] === styles.active)
-      content = <Content><EventsList navigation={this.props.navigation} refresh={this.state.refresh1}/></Content>
+      content = <Content>
+          <EventsList navigation={this.props.navigation} refresh={this.state.refresh1} type="admin"/>
+        </Content>
 
     if (this.state.tabs[2] === styles.active)
       content= <Tabs>

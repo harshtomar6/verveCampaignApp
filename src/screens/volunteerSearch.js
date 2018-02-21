@@ -114,12 +114,14 @@ export default class VolunteerSearch extends React.Component {
     })
   }
 
-  handlePressParticipant(participantId, participantName, _id){
+  handlePressParticipant(participantId, participantName, _id, eventsRegistered, eventsAttended){
     const { navigate } = this.props.navigation;
     navigate('participantDetails', {
       participantId,
       participantName,
-      _id
+      _id,
+      eventsRegistered,
+      eventsAttended
     })
   }
 
@@ -181,7 +183,7 @@ export default class VolunteerSearch extends React.Component {
             <List dataArray={this.state.searchResultParticipant}
           renderRow={item => 
             <ListItem button avatar
-              onPress={() => this.handlePressParticipant(item.id, item.name, item._id)}>
+              onPress={() => this.handlePressParticipant(item.id, item.name, item._id, item.eventsRegistered.length, item.eventsAttended)}>
               <Left>
                 <Thumbnail style={{width: 45, height: 45}} source={require('./../participant.png')} />
               </Left>
