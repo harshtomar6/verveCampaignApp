@@ -2,7 +2,6 @@ import React from 'react';
 import { View, StyleSheet, Image, ScrollView, Dimensions } from 'react-native';
 import { Text, Card, CardItem, Spinner, List, ListItem, Left, Thumbnail,
   Body, Right, Icon, Label, Toast } from 'native-base';
-import Swiper from 'react-native-swiper';
 let GLOBALS = require('./../globals');
 const config = require('./../config');
 
