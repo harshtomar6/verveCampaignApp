@@ -23,16 +23,18 @@ export default class Participants extends React.Component {
       this.setState({data: GLOBALS.participantList, userData: GLOBALS.userData})
     }
     else{    
-
-      AsyncStorage.getItem('userData').then(val => {
-        if(val){
-          let d = JSON.parse(val);
-          GLOBALS.userData = d;
-          this.setState({userData: d}, () => {
-            this.fetchData();
-          })
-        }
-      }).done()
+      if(this.props.type === 'admin'){
+        this.fetchData();
+      }else
+        AsyncStorage.getItem('userData').then(val => {
+          if(val){
+            let d = JSON.parse(val);
+            GLOBALS.userData = d;
+            this.setState({userData: d}, () => {
+              this.fetchData();
+            })
+          }
+        }).done()
     }
   }
 
