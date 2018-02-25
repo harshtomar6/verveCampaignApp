@@ -12,14 +12,24 @@ export default class ReviewSell extends React.Component {
     this.toast = null;
     this.state = {
       userData: null,
-      isLoading: false
+      isLoading: false,
+      events: []
     }
   }
 
   componentWillMount(){
     this.setState({
-      userData: this.props.navigation.state.params.userData
-    })
+      userData: GLOBALS.userData
+    });
+    let arr = []
+    let i=0;
+    let events = this.props.navigation.state.params.events
+    events.forEach(element => {
+      i++;
+      arr.push(GLOBALS.events.filter(item => item._id == element)[0].name)   
+      if(i == events.length)
+        this.setState({events: arr});   
+    });
   }
 
   handleSubmit(){
@@ -32,7 +42,9 @@ export default class ReviewSell extends React.Component {
         email: this.props.navigation.state.params.email,
         phone: this.props.navigation.state.params.phone,
         college: this.props.navigation.state.params.college,
-        event: this.props.navigation.state.params.event,
+        eventsRegistered: this.state.events,
+        eventsAttended: ['none'],
+        price: this.props.navigation.state.params.price,
         ownerid: this.state.userData._id
       })
     })
@@ -65,7 +77,7 @@ export default class ReviewSell extends React.Component {
             d.passesSold += 1;
             
             AsyncStorage.setItem('userData', JSON.stringify(d));
-            this.props.navigation.navigate('Volunteer')
+            this.props.navigation.navigate('success')
           }
         }).done()
       })
@@ -107,8 +119,17 @@ export default class ReviewSell extends React.Component {
                 <Text style={styles.info}>{params.phone}</Text>
                 <Label>College</Label>
                 <Text style={styles.info}>{params.college}</Text>
-                <Label>Event</Label>
-                <Text style={styles.info}>{params.event}</Text>
+                <Label>Events</Label>
+                <View style={styles.rowLabel}>
+                  {
+                  this.state.events.map( item => 
+                    <View style={styles.badge}>
+                      <Text style={{color: '#fff', fontSize: 14}}>{item}</Text>
+                    </View>
+                  )}
+                </View>
+                <Label>COST</Label>
+                <Text style={styles.info}>&#8377;&nbsp;&nbsp;{params.price}</Text>
               </Body>
             </CardItem>
             
@@ -130,6 +151,20 @@ export default class ReviewSell extends React.Component {
 const styles = StyleSheet.create({
   info: {
     fontSize: 18,
-    margin: 10
+    margin: 10,
+    color: GLOBALS.primaryColorDark
+  },
+  rowLabel: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    flexWrap: 'wrap',
+    padding: 10
+  },
+  badge: {
+    padding: 10,
+    borderRadius: 20,
+    backgroundColor: GLOBALS.primaryColor,
+    margin: 5
   },
 })

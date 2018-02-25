@@ -15,6 +15,10 @@ import ParticipantDetails from './src/screens/participantDetails';
 import ParticipantSearch from './src/screens/participantSearch';
 import EventDetails from './src/screens/eventDetails';
 import UpdateEvent from './src/screens/updateEvent';
+import PickEvents from './src/screens/pickEvents';
+import Validate from './src/screens/validate';
+import Success from './src/screens/success';
+import ValidateWrap from './src/screens/validateWrap';
 const config = require('./src/config');
 const GLOBALS = require('./src/globals');
 
@@ -30,7 +34,11 @@ const RootNavigator = StackNavigator({
   participantDetails: {screen: ParticipantDetails},
   participantSearch: {screen: ParticipantSearch},
   eventDetails: {screen: EventDetails},
-  updateEvent: {screen: UpdateEvent}
+  updateEvent: {screen: UpdateEvent},
+  pickEvents: {screen: PickEvents},
+  validate: {screen: Validate},
+  success: {screen: Success},
+  validateWrap: {screen: ValidateWrap}
 },{
   headerMode: 'none',
   navigationOptions: {

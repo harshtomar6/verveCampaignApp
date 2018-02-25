@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet, AsyncStorage} from 'react-native';
+import {View, StyleSheet, AsyncStorage, Dimensions, Image} from 'react-native';
 import {List, ListItem, Text, Thumbnail, Icon, Body, Right, Spinner, Toast, Left} from 'native-base';
 let GLOBALS = require('./../globals');
 let config = require('./../config');
@@ -136,6 +136,8 @@ export default class Participants extends React.Component {
     return (
       <View style={styles.container}>
         {showSpinner}
+        {
+          this.state.isLoading ? <Text></Text> : this.state.data.length > 0 ?
           <List dataArray={this.state.data}
           renderRow={item => 
             <ListItem button avatar 
@@ -155,7 +157,17 @@ export default class Participants extends React.Component {
                 <Icon name="arrow-forward"></Icon>
               </Right>
             </ListItem>  
-            }></List>
+            }></List>:
+            <View style={styles.innerContainer}>
+              <Image source={require('./../sad.png')} style={{ width: 120, height: 120}}/>
+                <Text style={{color: GLOBALS.primaryColorInactive, fontSize: 18}}>
+                  No Participants Yet !
+                </Text>
+                <Text style={{color: GLOBALS.primaryColorInactive, fontSize: 18}}>
+                  Your Participants Will Appear Here
+                </Text>
+            </View>
+        }
           <Toast ref={c => {this.toast = c;}} />
       </View>
     );
@@ -169,5 +181,12 @@ const styles = StyleSheet.create({
   },
   tabStyle: {
     backgroundColor: GLOBALS.primaryColor
+  },
+  innerContainer: {
+    flex: 1,
+    height: Dimensions.get('window').height*0.78,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff'
   }
 })

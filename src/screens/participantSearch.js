@@ -27,37 +27,43 @@ export default class ParticipantSearch extends React.Component {
 
   fetchData(){
     this.setState({isLoading: true})
-      fetch(config.SERVER_URI+'/getParticipants')
-        .then(res => {
-          this.setState({isLoading: false})
-          if(!res.ok){
-            if(this.toast !== null)
-            return this.toast._root.showToast({config: {
-              text: JSON.parse(res._bodyText).err,
-              position: 'bottom',
-              buttonText: 'Okay',
-              duration: 3000,
-              style: {
-                 backgroundColor: GLOBALS.primaryErrColor
-              }
-            }})
-          }
-          GLOBALS.participantList = JSON.parse(res._bodyText).data
-          this.setState({participantList: JSON.parse(res._bodyText).data})
-        })
-        .catch(err => {
-          this.setState({isLoading: false})
+    fetch(config.SERVER_URI+'/getVolunteerParticipants', {
+      method: 'post',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        id: GLOBALS.userData._id
+      })
+    })
+      .then(res => {
+        this.setState({isLoading: false})
+        if(!res.ok){
           if(this.toast !== null)
-          this.toast._root.showToast({config: {
-            text: 'An Error Occured !',
+          return this.toast._root.showToast({config: {
+            text: JSON.parse(res._bodyText).err,
             position: 'bottom',
             buttonText: 'Okay',
             duration: 3000,
             style: {
-              backgroundColor: GLOBALS.primaryErrColor
+               backgroundColor: GLOBALS.primaryErrColor
             }
           }})
-        })
+        }
+        GLOBALS.participantList = JSON.parse(res._bodyText).data
+        this.setState({data: JSON.parse(res._bodyText).data})
+      })
+      .catch(err => {
+        this.setState({isLoading: false})
+        if(this.toast !== null)
+        this.toast._root.showToast({config: {
+          text: 'An Error Occured !',
+          position: 'bottom',
+          buttonText: 'Okay',
+          duration: 3000,
+          style: {
+            backgroundColor: GLOBALS.primaryErrColor
+          }
+        }})
+      })
   }
 
   handleChange(text){
@@ -86,12 +92,15 @@ export default class ParticipantSearch extends React.Component {
     })
   }
 
-  handlePress(participantId, participantName, _id){
+  handlePress(participantId, participantName, _id, eventsRegistered, eventsAttended){
     const { navigate } = this.props.navigation;
     navigate('participantDetails', {
       participantId,
       participantName,
-      _id
+      _id,
+      eventsRegistered,
+      eventsAttended,
+      type: this.props.type
     })
   }
 
@@ -109,7 +118,7 @@ export default class ParticipantSearch extends React.Component {
           <Item style={{left: -60}}>
             <Input placeholder='Search by name or ID' 
               onChangeText={(text) => this.handleChange(text)} autoFocus={!this.state.isLoading}
-              editable={!this.state.isLoading}/>
+              editable={!this.state.isLoading && this.state.participantList.length > 0}/>
           </Item>
         </Header>
         <View style={{backgroundColor: '#fff', borderBottomWidth: 0.2, borderBottomColor: '#c1c1c1'}}>
@@ -126,7 +135,7 @@ export default class ParticipantSearch extends React.Component {
           <List dataArray={this.state.searchResult}
           renderRow={item => 
             <ListItem button avatar
-              onPress={() => this.handlePress(item.id, item.name, item._id)}>
+              onPress={() => this.handlePress(item.id, item.name, item._id, item.eventsRegistered.length, item.eventsAttended)}>
               <Left>
                 <Thumbnail style={{width: 45, height: 45}} source={require('./../participant.png')} />
               </Left>

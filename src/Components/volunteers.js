@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, AsyncStorage } from 'react-native';
+import { View, StyleSheet, AsyncStorage, Image, Dimensions } from 'react-native';
 import {List, ListItem, Text, Body, Right, Icon, Spinner, Toast,
   Left, Thumbnail, Tabs, Tab } from 'native-base';
 import Participants from './Participants';
@@ -91,22 +91,34 @@ export default class Volunteers extends React.Component {
     return (
       <View style={styles.container}>
           {showSpinner}
-            <List dataArray={this.state.data}
-            renderRow={item => 
-              <ListItem button avatar 
-                onPress={() => this.handlePress(item._id, item.name, item.passesSold)}>
-                <Left>
-                  <Thumbnail style={{width: 45, height: 45}} source={require('./../volunteer-thumbnail.png')} />
-                </Left>
-                <Body>
-                  <Text>{item.name}</Text>
-                  <Text note>Passes Sold: {item.passesSold}</Text>
-                </Body>
-                <Right>
-                  <Icon name="arrow-forward"></Icon>
-                </Right>
-              </ListItem>  
-            }></List>
+          {
+          this.state.isLoading ? <Text></Text> : this.state.data.length > 0 ?
+          <List dataArray={this.state.data}
+          renderRow={item => 
+            <ListItem button avatar 
+              onPress={() => this.handlePress(item._id, item.name, item.passesSold)}>
+              <Left>
+                <Thumbnail style={{width: 45, height: 45}} source={require('./../volunteer-thumbnail.png')} />
+              </Left>
+              <Body>
+                <Text>{item.name}</Text>
+                <Text note>Passes Sold: {item.passesSold}</Text>
+              </Body>
+              <Right>
+                <Icon name="arrow-forward"></Icon>
+              </Right>
+            </ListItem>  
+          }></List>:
+            <View style={styles.innerContainer}>
+              <Image source={require('./../sad.png')} style={{ width: 120, height: 120}}/>
+                <Text style={{color: GLOBALS.primaryColorInactive, fontSize: 18}}>
+                  No Volunteers Yet !
+                </Text>
+                <Text style={{color: GLOBALS.primaryColorInactive, fontSize: 18}}>
+                  All Volunteers Will Appear Here
+                </Text>
+            </View>
+        }
             <Toast ref={c => {this.toast = c;}} />
       </View>
     );
@@ -121,5 +133,12 @@ const styles = StyleSheet.create({
   },
   tabStyle: {
     backgroundColor: GLOBALS.primaryColor
+  },
+  innerContainer: {
+    flex: 1,
+    height: Dimensions.get('window').height*0.78,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff'
   }
 })

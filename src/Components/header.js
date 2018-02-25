@@ -66,6 +66,9 @@ export default class AppBar extends React.Component{
                   name: JSON.parse(val).name
                 }
               });
+              AsyncStorage.removeItem('userData')
+              GLOBALS.userData = {};
+              GLOBALS.participantList = [];
           }).done();
         }
       })

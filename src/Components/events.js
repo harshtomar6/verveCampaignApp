@@ -1,5 +1,5 @@
 import React from 'react';
-import { View ,StyleSheet} from 'react-native';
+import { View ,StyleSheet, ListView} from 'react-native';
 import { List, ListItem ,Separator, Text, Spinner, Toast, Left, Body, Thumbnail, Right, Icon} from 'native-base';
 let config = require('./../config');
 let GLOBALS = require('./../globals');
@@ -20,7 +20,8 @@ export default class EventsList extends React.Component {
       creativeEvents: [],
       gamingEvents: [],
       brainstormEvents: [],
-      musicalEvents: []
+      musicalEvents: [],
+      category: {}
     }
   }
 
@@ -86,166 +87,30 @@ export default class EventsList extends React.Component {
   }
 
   categorizeData(data){
-    this.setState({
-      mainStageEvents: data.filter((d) => {return d.type === 'Main Stage Events'}),
-      technicalEvents: data.filter((d) => {return d.type === 'Technical Events'}),
-      musicalEvents: data.filter((d) => {return d.type === 'Musical Events'}),
-      brainstormEvents: data.filter((d) => {return d.type === 'Brainstorm Events'}),
-      gamingEvents: data.filter((d) => {return d.type === 'Gaming Events'}),
-      creativeEvents: data.filter((d) => {return d.type === 'Creative Events'}),
-      sportsEvents: data.filter((d) => {return d.type === 'Sports Events'}),
-      funEvents: data.filter((d) => {return d.type === 'Fun Events'}),
+    let category = this.state.category
+    let i=0;
+    data.forEach(d => {
+      i++;
+      if(!category[d.type])
+        category[d.type] = []
+      
+      category[d.type].push(d);
+      if(i == data.length)
+        this.setState({category});
     })
   }
 
   render(){
-    let list = <View>
-      <Separator bordered>
-        <Text style={styles.title}>Main Stage Events</Text>
-      </Separator>
-      <List dataArray={this.state.mainStageEvents}
-      renderRow={item =>
-        <ListItem button avatar
-          onPress={() => this.handlePress(item._id, item.name)}>
-          <Left>
-            <Thumbnail style={{width: 45, height: 45}} source={require('./../7.png')} />
-          </Left>
-          <Body>
-            <Text>{item.name}</Text>
-            <Text note>No per Team: {item.team}</Text>
-            <Text note>Ticket Price: &#8377;{item.ticket}</Text>
-          </Body>
-          <Right>
-            <Icon name="arrow-forward"></Icon>
-          </Right>
-        </ListItem>
-        }></List>
-        <Separator bordered>
-          <Text style={styles.title}>Technical Events</Text>
-        </Separator>
-        <List dataArray={this.state.technicalEvents}
-        renderRow={item =>
-          <ListItem button avatar
-            onPress={() => this.handlePress(item._id, item.name)}>
-            <Left>
-              <Thumbnail style={{width: 45, height: 45}} source={require('./../7.png')} />
-            </Left>
-            <Body>
-              <Text>{item.name}</Text>
-              <Text note>No per Team: {item.team}</Text>
-              <Text note>Ticket Price: &#8377;{item.ticket}</Text>
-            </Body>
-            <Right>
-              <Icon name="arrow-forward"></Icon>
-            </Right>
-          </ListItem>
-          }></List>
-          <Separator bordered>
-            <Text style={styles.title}>Musical Events</Text>
-          </Separator>
-          <List dataArray={this.state.musicalEvents}
-          renderRow={item =>
-            <ListItem button avatar
-              onPress={() => this.handlePress(item._id, item.name)}>
-              <Left>
-                <Thumbnail style={{width: 45, height: 45}} source={require('./../7.png')} />
-              </Left>
-              <Body>
-                <Text>{item.name}</Text>
-                <Text note>No per Team: {item.team}</Text>
-                <Text note>Ticket Price: &#8377;{item.ticket}</Text>
-              </Body>
-              <Right>
-                <Icon name="arrow-forward"></Icon>
-              </Right>
-            </ListItem>
-            }></List>
-          <Separator bordered>
-            <Text style={styles.title}>Brainstorm Events</Text>
-          </Separator>
-          <List dataArray={this.state.brainstormEvents}
-          renderRow={item =>
-            <ListItem button avatar
-              onPress={() => this.handlePress(item._id, item.name)}>
-              <Left>
-                <Thumbnail style={{width: 45, height: 45}} source={require('./../7.png')} />
-              </Left>
-              <Body>
-                <Text>{item.name}</Text>
-                <Text note>No per Team: {item.team}</Text>
-                <Text note>Ticket Price: &#8377;{item.ticket}</Text>
-              </Body>
-              <Right>
-                <Icon name="arrow-forward"></Icon>
-              </Right>
-            </ListItem>
-            }></List>
-            <Separator bordered>
-              <Text style={styles.title}>Gaming Events</Text>
-            </Separator>
-            <List dataArray={this.state.gamingEvents}
-            renderRow={item =>
-              <ListItem button avatar
-                onPress={() => this.handlePress(item._id, item.name)}>
-                <Left>
-                  <Thumbnail style={{width: 45, height: 45}} source={require('./../7.png')} />
-                </Left>
-                <Body>
-                  <Text>{item.name}</Text>
-                  <Text note>No per Team: {item.team}</Text>
-                  <Text note>Ticket Price: &#8377;{item.ticket}</Text>
-                </Body>
-                <Right>
-                  <Icon name="arrow-forward"></Icon>
-                </Right>
-              </ListItem>
-              }></List>
-              <Separator bordered>
-                <Text style={styles.title}>Creative Events</Text>
-              </Separator>
-              <List dataArray={this.state.creativeEvents}
-              renderRow={item =>
-                <ListItem button avatar
-                  onPress={() => this.handlePress(item._id, item.name)}>
-                  <Left>
-                    <Thumbnail style={{width: 45, height: 45}} source={require('./../7.png')} />
-                  </Left>
-                  <Body>
-                    <Text>{item.name}</Text>
-                    <Text note>No per Team: {item.team}</Text>
-                    <Text note>Ticket Price: &#8377;{item.ticket}</Text>
-                  </Body>
-                  <Right>
-                    <Icon name="arrow-forward"></Icon>
-                  </Right>
-                </ListItem>
-                }></List>
-                <Separator bordered>
-                  <Text style={styles.title}>Sports Events</Text>
-                </Separator>
-                <List dataArray={this.state.sportsEvents}
-                renderRow={item =>
-                  <ListItem button avatar
-                    onPress={() => this.handlePress(item._id, item.name)}>
-                    <Left>
-                      <Thumbnail style={{width: 45, height: 45}} source={require('./../7.png')} />
-                    </Left>
-                    <Body>
-                      <Text>{item.name}</Text>
-                      <Text note>No per Team: {item.team}</Text>
-                      <Text note>Ticket Price: &#8377;{item.ticket}</Text>
-                    </Body>
-                    <Right>
-                      <Icon name="arrow-forward"></Icon>
-                    </Right>
-                  </ListItem>
-                  }></List>
-                  <Separator bordered>
-                    <Text style={styles.title}>Fun Events</Text>
-                  </Separator>
-                  <List dataArray={this.state.funEvents}
-                  renderRow={item =>
-                    <ListItem button avatar
+    const ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 !== r2,
+      sectionHeaderHasChanged: (s1, s2) => s1 !== s2
+      });
+    
+    let list2 = <View>
+      <ListView
+        dataSource={ds.cloneWithRowsAndSections(this.state.category)}
+        renderRow={
+        (item) => <ListItem button avatar
                       onPress={() => this.handlePress(item._id, item.name)}>
                       <Left>
                         <Thumbnail style={{width: 45, height: 45}} source={require('./../7.png')} />
@@ -259,9 +124,15 @@ export default class EventsList extends React.Component {
                         <Icon name="arrow-forward"></Icon>
                       </Right>
                     </ListItem>
-                    }></List>
-        </View>
-    let showSpinner = this.state.isLoading ? <Spinner color={GLOBALS.primaryColorDark} />: list
+        }
+        renderSectionHeader={
+        (sectionData, category) => <Separator bordered>
+          <Text style={styles.title}>{category}</Text>
+        </Separator>
+        }
+        />
+    </View>
+    let showSpinner = this.state.isLoading ? <Spinner color={GLOBALS.primaryColorDark} />: list2
     return (
       <View style={styles.container}>
 

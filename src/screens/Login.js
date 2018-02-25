@@ -84,6 +84,7 @@ export default class Login extends React.Component {
           AsyncStorage.setItem('userType', 'Volunteer');
           AsyncStorage.setItem('userData', JSON.stringify(JSON.parse(res._bodyText).data))
           this.props.navigation.dispatch(moveToVolunteer);
+          GLOBALS.userData = JSON.parse(res._bodyText).data;
           GLOBALS.socket.emit('record-activity', {
             type: 'LOGIN',
             owner: {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Image, Dimensions } from 'react-native';
 import { List, ListItem, Text, Spinner, Left, Body, Right,
   Thumbnail, Icon, Toast } from 'native-base';
 let GLOBALS = require('./../globals');
@@ -117,7 +117,9 @@ export default class RecentActivity extends React.Component {
     return (
       <View style={styles.container}>
         {showSpinner}
-        <List dataArray={this.state.data}
+        {
+          this.state.isLoading ? <Text></Text> : this.state.data.length > 0 ?
+          <List dataArray={this.state.data}
           renderRow={item => 
             <ListItem button avatar 
               onPress={() => this.handlePress(item.owner.id, item.owner.name)}>
@@ -135,7 +137,18 @@ export default class RecentActivity extends React.Component {
               </Right>
             </ListItem>  
           }></List>
-          <Toast ref={c => {this.toast = c}} />
+        :
+            <View style={styles.innerContainer}>
+              <Image source={require('./../sad.png')} style={{ width: 120, height: 120}}/>
+                <Text style={{color: GLOBALS.primaryColorInactive, fontSize: 18}}>
+                  No Activity Yet !
+                </Text>
+                <Text style={{color: GLOBALS.primaryColorInactive, fontSize: 18}}>
+                  All Activity Will Appear Here
+                </Text>
+            </View>
+        }
+        <Toast ref={c => {this.toast = c}} />
       </View>
     );
   }
@@ -144,6 +157,13 @@ export default class RecentActivity extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff'
+  },
+  innerContainer: {
+    flex: 1,
+    height: Dimensions.get('window').height*0.78,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#fff'
   }
 });

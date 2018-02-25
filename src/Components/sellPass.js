@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, AsyncStorage, Dimensions, Image, Picker } from 'react-native';
+import { View, StyleSheet, AsyncStorage, Dimensions, Image } from 'react-native';
 import { Text, Button, Body, Card, CardItem, Form, Item, Label, Input, Toast } from 'native-base';
 import { TextField } from 'react-native-material-textfield';
 let GLOBALS = require('./../globals');
@@ -15,53 +15,18 @@ export default class SellPass extends React.Component {
       name: '',
       email: '',
       phone: '',
-      college: '',
-      event: 'Java'
+      college: ''
     }
-  }
-
-  componentWillMount(){
-    AsyncStorage.getItem('userData').then(val => {
-      if(val){
-        this.setState({userData: JSON.parse(val)});      
-      }
-    }).done()
-  }
-
-  componentDidMount(){
-    GLOBALS.socket.on('alloted', data => {
-      if(data.id === this.state.userData._id){
-        alert('Passes Alloted');
-        let d = this.state.userData
-        d.passesAlloted = data.passesAlloted
-        this.setState({userData: d}, () => {
-          AsyncStorage.setItem('userData', JSON.stringify(this.state.userData))
-        })
-      } 
-    })
-
-    GLOBALS.socket.on('not-alloted', (data) => {
-      if(data.id === this.state.userData._id){
-        alert('Passes Dealloted');
-        let d = this.state.userData;
-        d.passesAlloted = 0;
-        this.setState({userData: d}, () => {
-          AsyncStorage.setItem('userData', JSON.stringify(this.state.userData))
-        });
-      }
-    })
   }
 
   handleSubmit(){
     if(this.validateInputs() === 1){
       const { navigate } = this.props.navigation;
-      navigate('reviewSell', {
+      navigate('pickEvents', {
         name: this.state.name,
         email: this.state.email,
         phone: this.state.phone,
-        college: this.state.college,
-        event: this.state.event,
-        userData: this.state.userData
+        college: this.state.college
       });
     }
   }
@@ -131,93 +96,57 @@ export default class SellPass extends React.Component {
   }
 
   render(){
-
-    let content = this.state.userData === null ? <Text>Cannot retreive user data</Text>:
-      this.state.userData.passesAlloted - this.state.userData.passesSold <= 0 ? 
-      <View style={styles.innerContainer}>
-        <Image source={require('./../sad.png')} style={{ width: 120, height: 120}}/>
-        <Text style={{color: GLOBALS.primaryColorInactive, fontSize: 18}}>
-          {this.state.userData.passesAlloted - this.state.userData.passesSold === 0 ?
-             'You have sold all your passes !':
-             'You have been not alloted passes yet !'}
-        </Text>
-        <View style={{justifyContent: 'center', padding: 15}}>
-        <Button primary> 
-          <Text>Request Admin</Text> 
-        </Button>
-        </View>
-      </View> :
-      <View style={{backgroundColor: '#fff'}}>
-        <View style={styles.imageContainer}>
-          <Image style={styles.image} source={require('./../grad.png')} />
-        </View>
-        <View style={styles.infohero}>
-          <Text style={{color: '#fff', fontWeight: '800', fontSize: 22}}>
-            {this.state.userData.passesAlloted - this.state.userData.passesSold} Passes Left
-          </Text>
-        </View>
-        <View style={{marginTop: 50}}>
-        <View style={styles.header}>
-          <Text style={{color: GLOBALS.primaryColorDark}}>ENTER PARTICIPANT DETAILS</Text>
-        </View>
-        <View style={styles.body}>
-          <TextField
-            label='Name'
-            value={this.state.name}
-            onChangeText={ (name) => this.setState({ name })}
-            tintColor={GLOBALS.primaryColor} 
-          />
-          <TextField
-            label='E-mail'
-            value={this.state.email}
-            onChangeText={ (email) => this.setState({ email })}
-            tintColor={GLOBALS.primaryColor}
-            keyboardType="email-address" 
-          />
-          <TextField
-            label='Phone'
-            value={this.state.phone}
-            onChangeText={ (phone) => this.setState({ phone })}
-            tintColor={GLOBALS.primaryColor}
-            keyboardType="numeric" 
-          />
-          <TextField
-            label='College'
-            value={this.state.college}
-            onChangeText={ (college) => this.setState({ college })}
-            tintColor={GLOBALS.primaryColor} 
-          />
-          <Label style={{marginTop: 10}}>Select Event</Label>
-          <Picker style={{borderBottomColor: GLOBALS.primaryColor, borderBottomWidth: 1}}
-            selectedValue={this.state.event}
-            onValueChange={(itemValue, itemIndex) => this.setState({event: itemValue})}>
-            <Picker.Item label="ABC" value="java" />
-            <Picker.Item label="DEF" value="js" />
-            <Picker.Item label="DEF" value="js" />
-            <Picker.Item label="DEF" value="js" />
-            <Picker.Item label="DEF" value="js" />
-            <Picker.Item label="DEF" value="js" />
-            <Picker.Item label="DEF" value="js" />
-            <Picker.Item label="DEF" value="js" />
-            <Picker.Item label="DEF" value="js" />
-            <Picker.Item label="DEF" value="js" />
-            <Picker.Item label="DEF" value="js" />
-            <Picker.Item label="DEF" value="js" />
-          </Picker>
-
-          <Button block danger style={{marginTop: 20}}
-            onPress={this.handleSubmit.bind(this)}>
-            <Text>Submit</Text>
-          </Button>
-          <Toast ref={c => {this.toast =c }} />
-        </View>
-        </View>
-      </View>
-      
-
     return (
       <View style={styles.container}>
-        {content}
+          <View style={{backgroundColor: '#fff'}}>
+          <View style={styles.imageContainer}>
+            <Image style={styles.image} source={require('./../grad.png')} />
+          </View>
+          <View style={styles.infohero}>
+            <Text style={{color: '#fff', fontWeight: '800', fontSize: 22}}>
+              {GLOBALS.userData.passesSold} Passes Sold
+            </Text>
+          </View>
+          <View style={{marginTop: 50}}>
+          <View style={styles.header}>
+            <Text style={{color: GLOBALS.primaryColorDark}}>ENTER PARTICIPANT DETAILS</Text>
+          </View>
+          <View style={styles.body}>
+            <TextField
+              label='Name'
+              value={this.state.name}
+              onChangeText={ (name) => this.setState({ name })}
+              tintColor={GLOBALS.primaryColor} 
+            />
+            <TextField
+              label='E-mail'
+              value={this.state.email}
+              onChangeText={ (email) => this.setState({ email })}
+              tintColor={GLOBALS.primaryColor}
+              keyboardType="email-address" 
+            />
+            <TextField
+              label='Phone'
+              value={this.state.phone}
+              onChangeText={ (phone) => this.setState({ phone })}
+              tintColor={GLOBALS.primaryColor}
+              keyboardType="numeric" 
+            />
+            <TextField
+              label='College'
+              value={this.state.college}
+              onChangeText={ (college) => this.setState({ college })}
+              tintColor={GLOBALS.primaryColor} 
+            />
+            <Button block danger style={{marginTop: 20}}
+              onPress={this.handleSubmit.bind(this)}>
+              <Text>PICK EVENTS</Text>
+            </Button>
+            
+          </View>
+          </View>
+        </View>
+        <Toast ref={c => {this.toast =c }} />
       </View>
     );
   }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Linking} from 'react-native';
+import { StyleSheet, View, Linking, Dimensions, Image} from 'react-native';
 import {Toast, Spinner, Container, Content, Body, Card, CardItem, Button, Label,
    Text, Icon} from 'native-base';
 import AppBar from './../Components/header';
@@ -9,16 +9,22 @@ let config = require('./../config');
 export default class ParticipantDetails extends React.Component {
   constructor(){
     super();
+    this.fetchData = this.fetchData.bind(this);
     this.callNumber = this.callNumber.bind(this);
     this.toast = null;
     this.state = {
       data: '',
       isLoading: true,
-      participantId: ''
+      participantId: '',
+      empty: false
     }
   }
 
   componentWillMount(){
+    this.fetchData(); 
+  }
+
+  fetchData(){
     this.setState({
       participantId: this.props.navigation.state.params.participantId
     })
@@ -44,9 +50,14 @@ export default class ParticipantDetails extends React.Component {
           })
         }
         
-        this.setState({data: JSON.parse(res._bodyText).data}, () => {
-          this.setState({isLoading: false})
-        })
+        if(JSON.parse(res._bodyText).data === null)
+          this.setState({empty: true}, () => {
+            this.setState({isLoading: false})
+          })
+        else
+          this.setState({data: JSON.parse(res._bodyText).data}, () => {
+            this.setState({isLoading: false})
+          })
       })
       .catch(err => {
         alert(err)
@@ -78,6 +89,17 @@ export default class ParticipantDetails extends React.Component {
       const {navigate} = this.props.navigation;
       navigate('volunteerDetails', {
         volunteerId: this.state.data.ownerid
+      })
+    }
+  }
+
+  handleValidate(){
+    if(!this.state.isLoading){
+      const {navigate} = this.props.navigation;
+      navigate('validate', {
+        participantId: this.state.data.id,
+        eventsRegistered: this.state.data.eventsRegistered,
+        eventsAttended: this.state.data.eventsAttended
       })
     }
   }
@@ -150,6 +172,17 @@ export default class ParticipantDetails extends React.Component {
         <AppBar title={params.participantName} left='arrow-back'
           icon='none' navigation={this.props.navigation} noShadow={true}/>
         <Content>
+          {this.state.empty ? 
+          <View style={styles.innerContainer}>
+          <Image source={require('./../sad.png')} style={{ width: 120, height: 120}}/>
+            <Text style={{color: GLOBALS.primaryColorInactive, fontSize: 18}}>
+              No Participants Yet !
+            </Text>
+            <Text style={{color: GLOBALS.primaryColorInactive, fontSize: 18}}>
+              Please Enter Correct Participant ID
+            </Text>
+        </View>:
+          <View>
           <View style={styles.banner}>
             <Text style={styles.bannerText}>
               {params.eventsRegistered >= 0 ? params.eventsRegistered : this.state.isLoading ? '-' : this.state.data.passesSold } 
@@ -183,12 +216,14 @@ export default class ParticipantDetails extends React.Component {
                 </Button>: <Text/>}
                 <Text></Text>
                 <Text></Text>
-                <Button block danger >
+                <Button block danger onPress={this.handleValidate.bind(this)}>
                   <Text>Validate</Text>
                 </Button>
               </Body>
             </CardItem>
           </Card>
+          </View>
+          }
         </Content>
       </Container>
     );
@@ -235,5 +270,13 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: GLOBALS.primaryColor,
     margin: 5
+  },
+  
+  innerContainer: {
+    flex: 1,
+    height: Dimensions.get('window').height*0.78,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff'
   }
 })

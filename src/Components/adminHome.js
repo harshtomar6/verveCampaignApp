@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, StyleSheet, Image, ScrollView, Dimensions } from 'react-native';
+import { View, StyleSheet, Image, ScrollView, Dimensions, InteractionManager } from 'react-native';
 import { Text, Card, CardItem, Spinner, List, ListItem, Left, Thumbnail,
-  Body, Right, Icon, Label, Toast } from 'native-base';
+  Body, Right, Icon, Label, Toast, Button } from 'native-base';
 let GLOBALS = require('./../globals');
 const config = require('./../config');
 
@@ -11,6 +11,7 @@ export default class AdminHome extends React.Component {
     super();
     this.toast = null;
     this.fetchData = this.fetchData.bind(this);
+    this.scrollView = null;
     this.state = {
       data: [],
       isLoading: false,
@@ -115,6 +116,11 @@ export default class AdminHome extends React.Component {
     })
   }
 
+  validate(){
+    const { navigate } = this.props.navigation;
+    navigate('validateWrap');
+  }
+
   render(){
 
     let summary = this.state.isLoading ? <Spinner color={GLOBALS.primaryColorDark} /> :
@@ -122,8 +128,6 @@ export default class AdminHome extends React.Component {
       <Body>
         <Label>Total Collection</Label>
         <Text style={styles.info}>&#8377;&nbsp;{this.state.data.summary.totalCollection}</Text>
-        <Label>Total Passes Alloted</Label>
-        <Text style={styles.info}>{this.state.data.summary.totalPassesAlloted}</Text>
         <Label>Total Passes Sold</Label>
         <Text style={styles.info}>{this.state.data.summary.totalPassesSold}</Text>
         <Label>Total Volunteers Registered</Label>
@@ -155,9 +159,10 @@ export default class AdminHome extends React.Component {
     return (
       <View style={styles.container}>
         <View style={{backgroundColor:'#fff', height: Dimensions.get('window').height*0.3}}>
-          <ScrollView
+          <ScrollView ref='_scrollView'
               horizontal
               pagingEnabled
+              scrollEventThrottle={10}
               showsHorizontalScrollIndicator={false}
             >
               <View style={styles.slide1}>
@@ -184,12 +189,6 @@ export default class AdminHome extends React.Component {
                   {this.state.isLoading ? '-' : this.state.data.summary.totalPassesSold}
                 </Text>
               </View>
-              <View style={styles.slide3}>
-                <Text style={styles.bannerText}>Total Passes Alloted</Text>
-                <Text style={styles.bannerText}>
-                  {this.state.isLoading ? '-' : this.state.data.summary.totalPassesAlloted}
-                </Text>
-              </View>
             </ScrollView>
         </View>
         <Card>
@@ -206,6 +205,18 @@ export default class AdminHome extends React.Component {
           </CardItem>
           <CardItem style={{flex: 1}}>
             {recentActivity}
+          </CardItem>
+        </Card>
+        <Card>
+          <CardItem header>
+            <Text style={{color: GLOBALS.primaryColorDark}}>ACTIONS</Text>
+          </CardItem>
+          <CardItem>
+            <Body>
+              <Button block danger onPress={this.validate.bind(this)}>
+                <Text>Validate participant</Text>
+              </Button>
+            </Body>
           </CardItem>
         </Card>
         <Toast ref={(c) => {this.toast = c}} />

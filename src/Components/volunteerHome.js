@@ -22,6 +22,7 @@ export default class VolunteerHome extends React.Component {
         this.setState({
           data: JSON.parse(val)
         })
+        GLOBALS.userData = JSON.parse(val);
       }
     }).done()
   }
@@ -117,7 +118,7 @@ export default class VolunteerHome extends React.Component {
               <Text style={{color: GLOBALS.primaryColor}}>Participant</Text>
             </Button>
             <Button vertical transparent style={styles.btn}
-              onPress={() => this.props.navigation.navigate('participantSearch')}>
+              onPress={() => this.props.navigation.navigate('validateWrap')}>
               <Icon name="checkmark" style={{color: GLOBALS.primaryColor, fontSize: 26}}></Icon>
               <Text style={{color: GLOBALS.primaryColor}}>Validate</Text>
             </Button>
