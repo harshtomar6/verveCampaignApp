@@ -97,6 +97,9 @@ export default class RecentActivity extends React.Component {
       case 'LOGOUT':
         icon = require('./../logout.png');
         break;
+      case 'MONEY_COLLECT':
+        icon = require('./../dollarIcon2.png');
+        break;
       default:
         icon = '';
     }

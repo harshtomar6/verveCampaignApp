@@ -164,6 +164,8 @@ export default class ParticipantDetails extends React.Component {
               </Button>
             </View>
           </View>
+          <Label>College</Label>
+          <Text style={styles.info}>{this.state.data.college}</Text>
         </Body>
       </CardItem>
 

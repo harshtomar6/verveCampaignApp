@@ -75,6 +75,13 @@ export default class EventDetails extends React.Component {
     })
   }
 
+  handlePress(){
+    let {navigate} = this.props.navigation;
+    navigate('eventParticipant', {
+      event: this.state.data.name
+    })
+  }
+
   render(){
     let {params} = this.props.navigation.state;
     let showSpinner = this.state.isLoading ? <Spinner color={GLOBALS.primaryColorDark} />: <Text></Text>
@@ -120,14 +127,16 @@ export default class EventDetails extends React.Component {
         <AppBar title={params.name} left="arrow-back" icon="none" navigation={this.props.navigation} 
         noShadow={true}/>
         <Content>
-          <View style={styles.banner}>
-            <Text style={styles.bannerText}>
-              {this.state.isLoading ? '-' : this.state.data.participantsRegistered} People Registered
-            </Text>
-            <Text style={{color: '#fff'}}>
-              {this.state.isLoading ? '-': this.state.data.participantsAttended} People Attended
-            </Text>
-          </View>
+          {params.type === 'admin' ?
+            <View style={styles.banner}>
+              <Text style={styles.bannerText}>
+                {this.state.isLoading ? '-' : this.state.data.participantsRegistered} People Registered
+              </Text>
+              <Text style={{color: '#fff'}}>
+                {this.state.isLoading ? '-': this.state.data.participantsAttended} People Attended
+              </Text>
+            </View>: <Text />
+          }
           <Card>
             <CardItem header>
               <Text style={{color: GLOBALS.primaryColor}}>PRIZE DETAILS</Text>
@@ -167,21 +176,21 @@ export default class EventDetails extends React.Component {
             </CardItem>
             {organiserInfo}
           </Card>
-          {/*{params.type === 'admin' ?
+          {params.type === 'admin' ?
           <Card>
             <CardItem header>
               <Text style={{color: GLOBALS.primaryColor}}>ACTIONS</Text>
             </CardItem>
             <CardItem>
               <Body>
-                <Button block danger onPress={this.handleUpdate.bind(this)}>
-                  <Text>Update Event Information</Text>
+                <Button block danger onPress={this.handlePress.bind(this)}>
+                  <Text>View Participants</Text>
                 </Button>
               </Body>
             </CardItem>
           </Card>
           : <Text/>
-          }*/}
+          }
         </Content>
         <Toast ref={c=>{this.toast = c}} />
       </Container>

@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet, AsyncStorage } from 'react-native';
 import { Container, Content, Card, CardItem, Text, Label, Body, Button, Toast, Spinner} from 'native-base';
 import AppBar from './../Components/header';
+import { NavigationActions } from 'react-navigation';
 let GLOBALS = require('./../globals');
 let config = require('./../config');
 
@@ -33,6 +34,7 @@ export default class ReviewSell extends React.Component {
   }
 
   handleSubmit(){
+    if(!this.state.isLoading){
     this.setState({isLoading: true})
     fetch(config.SERVER_URI+'/addParticipant', {
       method: 'post',
@@ -71,13 +73,21 @@ export default class ReviewSell extends React.Component {
           }
         })
 
+        const goToSuccess = NavigationActions.reset({
+          index:  1,
+          actions: [
+            NavigationActions.navigate({routeName: 'Volunteer'}),
+            NavigationActions.navigate({routeName: 'success'})
+          ]
+        });
+
         AsyncStorage.getItem('userData').then(val => {
           if(val){
             let d = JSON.parse(val);
             d.passesSold += 1;
             
             AsyncStorage.setItem('userData', JSON.stringify(d));
-            this.props.navigation.navigate('success')
+            this.props.navigation.dispatch(goToSuccess);
           }
         }).done()
       })
@@ -95,6 +105,8 @@ export default class ReviewSell extends React.Component {
           }
         })
       })
+    }else
+      alert('Your request is being processed !');
   }
 
   render(){

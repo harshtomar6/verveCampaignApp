@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { StackNavigator } from 'react-navigation';
+import { TabNavigator } from 'react-navigation';
 import { AsyncStorage } from 'react-native'
 import { Root, Toast, ActionSheet } from 'native-base';
 import SocketIOClient from 'socket.io-client';
@@ -19,6 +20,8 @@ import PickEvents from './src/screens/pickEvents';
 import Validate from './src/screens/validate';
 import Success from './src/screens/success';
 import ValidateWrap from './src/screens/validateWrap';
+import EventParticipant from './src/screens/eventParticipant';
+import CollectMoney from './src/screens/collectMoney';
 const config = require('./src/config');
 const GLOBALS = require('./src/globals');
 
@@ -38,7 +41,9 @@ const RootNavigator = StackNavigator({
   pickEvents: {screen: PickEvents},
   validate: {screen: Validate},
   success: {screen: Success},
-  validateWrap: {screen: ValidateWrap}
+  validateWrap: {screen: ValidateWrap},
+  eventParticipant: {screen: EventParticipant},
+  collectMoney: {screen: CollectMoney}
 },{
   headerMode: 'none',
   navigationOptions: {

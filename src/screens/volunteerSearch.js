@@ -121,7 +121,8 @@ export default class VolunteerSearch extends React.Component {
       participantName,
       _id,
       eventsRegistered,
-      eventsAttended
+      eventsAttended,
+      type: 'admin'
     })
   }
 

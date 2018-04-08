@@ -76,6 +76,16 @@ export default class VolunteerDetails extends React.Component {
     }).catch(err => alert(err))
   }
 
+    handleCollect(){
+    let {navigate} = this.props.navigation;
+    if(!this.state.isLoading)
+      navigate('collectMoney', {
+        id: this.state.volunteerId,
+        name: this.state.data.name,
+        totalMoney: this.state.data.totalMoney - this.state.data.amountCollected
+      });
+  }
+
   handleDelete(){
     Alert.alert(
       'Block Volunteer',
@@ -89,7 +99,7 @@ export default class VolunteerDetails extends React.Component {
   }
 
   render(){
-    const {params} = this.props.navigation.state;
+    const {params} = this.props.navigation.state; 
     let infoColor = this.state.data.passesAlloted === 0 ? '#FC4442': GLOBALS.primaryColorDark
     let moneyInfo = this.state.isLoading ? <Spinner color={GLOBALS.primaryColorDark} /> :
       <CardItem>
@@ -98,6 +108,24 @@ export default class VolunteerDetails extends React.Component {
               &#8377;&nbsp;{this.state.data.totalMoney}</Text>
           </View>
       </CardItem>
+
+    let collectionInfo1 = this.state.isLoading ? <Spinner color={GLOBALS.primaryColorDark} />:
+    <CardItem>
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <Text style={{fontWeight: '700', fontSize: 23,marginBottom: 20}}>&#8377;&nbsp;
+          {this.state.data.amountCollected}
+        </Text>
+      </View>
+    </CardItem>
+
+    let collectionInfo2 = this.state.isLoading ? <Spinner color={GLOBALS.primaryColorDark} />:
+    <CardItem>
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <Text style={{fontWeight: '700', fontSize: 23, marginBottom: 20}}>&#8377;&nbsp;
+          {this.state.data.totalMoney - this.state.data.amountCollected}
+        </Text>
+      </View>
+    </CardItem>
 
     let info = this.state.isLoading ? <Spinner color={GLOBALS.primaryColorDark} /> : 
       <CardItem>
@@ -156,6 +184,18 @@ export default class VolunteerDetails extends React.Component {
           </Card>
           <Card>
             <CardItem header>
+              <Text style={{color: GLOBALS.primaryColor}}>AMOUNT COLLECTED</Text>
+            </CardItem>
+            {collectionInfo1}
+          </Card>
+          <Card>
+            <CardItem header>
+              <Text style={{color: GLOBALS.primaryColor}}>AMOUNT PENDING</Text>
+            </CardItem>
+            {collectionInfo2}
+          </Card>
+          <Card>
+            <CardItem header>
               <Text style={{color: GLOBALS.primaryColor}}>VOLUNTEER INFO</Text>
             </CardItem>
             {info}
@@ -166,6 +206,10 @@ export default class VolunteerDetails extends React.Component {
             </CardItem>
             <CardItem>
               <Body>
+              <Button block primary onPress={this.handleCollect.bind(this)}>
+                <Text>Collect Money</Text>
+              </Button>
+              <Text></Text>
               <Text></Text>
               <Button block danger onPress={this.handleDelete.bind(this)}>
                 <Text>Block Volunteer</Text>

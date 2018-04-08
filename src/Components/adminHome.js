@@ -100,6 +100,9 @@ export default class AdminHome extends React.Component {
       case 'LOGOUT':
         icon = require('./../logout.png');
         break;
+      case 'MONEY_COLLECT':
+        icon = require('./../dollarIcon2.png');
+        break;
       default:
         icon = '';
     }
@@ -128,6 +131,10 @@ export default class AdminHome extends React.Component {
       <Body>
         <Label>Total Collection</Label>
         <Text style={styles.info}>&#8377;&nbsp;{this.state.data.summary.totalCollection}</Text>
+        <Label>Total Amount Collected</Label>
+        <Text style={styles.info}>&#8377;&nbsp;{this.state.data.summary.amountCollected}</Text>
+        <Label>Total Amount Pending</Label>
+        <Text style={styles.info}>&#8377;&nbsp;{this.state.data.summary.totalCollection - this.state.data.summary.amountCollected}</Text>
         <Label>Total Passes Sold</Label>
         <Text style={styles.info}>{this.state.data.summary.totalPassesSold}</Text>
         <Label>Total Volunteers Registered</Label>

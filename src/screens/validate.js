@@ -17,7 +17,8 @@ export default class Validate extends React.Component {
       isSelect: false,
       isLoading: false,
       data: [],
-      date: ''
+      date: '',
+      validated: false
     }
   }
 
@@ -35,7 +36,7 @@ export default class Validate extends React.Component {
     })
   }
 
-  handleCheck(item){
+  handleCheck(item){;
     this.setState({
       selected: item
     })
@@ -55,41 +56,50 @@ export default class Validate extends React.Component {
         }})
     }
     else{
-      this.setState({isLoading: true})
-    fetch(config.SERVER_URI+'/validateParticipant', {
-      method: 'post',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({id: this.props.navigation.state.params.participantId, name: this.state.selected})
-    })
-      .then(res => {
-        this.setState({isLoading: false})
-        if(!res.ok){
+      if(!this.state.isLoading){
+        this.setState({isLoading: true})
+        fetch(config.SERVER_URI+'/validateParticipant', {
+          method: 'post',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({id: this.props.navigation.state.params.participantId, name: this.state.selected})
+        })
+        .then(res => {
+          this.setState({isLoading: false})
+          if(!res.ok){
+            if(this.toast !== null)
+            return this.toast._root.showToast({config: {
+              text: "Internal Server Error",
+              position: 'bottom',
+              buttonText: 'Okay',
+              duration: 3000,
+              style: {
+                backgroundColor: GLOBALS.primaryErrColor
+              }
+            }})
+          }
+          let data = this.state.data;
+          data.splice(data.indexOf(this.state.selected), 1)
+          this.setState({data: data}, () => {
+            this.setState({selected: ''})
+          });
+          alert('Participant Validated !');
+        })
+        .catch(err => {
+          this.setState({isLoading: false})
           if(this.toast !== null)
-          return this.toast._root.showToast({config: {
-            text: "Internal Server Error",
+          this.toast._root.showToast({config: {
+            text: 'An Error Occured !',
             position: 'bottom',
             buttonText: 'Okay',
             duration: 3000,
             style: {
-               backgroundColor: GLOBALS.primaryErrColor
+              backgroundColor: GLOBALS.primaryErrColor
             }
           }})
-        }
-        alert('Participant Validated !');
-      })
-      .catch(err => {
-        this.setState({isLoading: false})
-        if(this.toast !== null)
-        this.toast._root.showToast({config: {
-          text: 'An Error Occured !',
-          position: 'bottom',
-          buttonText: 'Okay',
-          duration: 3000,
-          style: {
-            backgroundColor: GLOBALS.primaryErrColor
-          }
-        }})
-      })
+        })
+      }
+      else
+        alert('Your request is being processed');
     }
   }
 
