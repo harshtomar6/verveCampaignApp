@@ -118,7 +118,7 @@ export default class VolunteerHome extends React.Component {
               <Text style={{color: GLOBALS.primaryColor}}>Participant</Text>
             </Button>
             <Button vertical transparent style={styles.btn}
-              onPress={() => this.props.navigation.navigate('validateWrap')}>
+              onPress={() => this.props.navigation.navigate('validateWrap', {type: 'volunteer'})}>
               <Icon name="checkmark" style={{color: GLOBALS.primaryColor, fontSize: 26}}></Icon>
               <Text style={{color: GLOBALS.primaryColor}}>Validate</Text>
             </Button>

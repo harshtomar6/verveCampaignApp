@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, StyleSheet, Image} from 'react-native';
+import { View, StyleSheet, Image, Linking} from 'react-native';
 import { Container, Text, Card, CardItem, Label, Toast, Content, Spinner, Body,
-  Button } from 'native-base';
+  Button, Icon } from 'native-base';
 import AppBar from './../Components/header';
 let config = require('./../config');
 let GLOBALS = require('./../globals');
@@ -82,6 +82,15 @@ export default class EventDetails extends React.Component {
     })
   }
 
+  callNumber(phoneNumber){
+    Linking.canOpenURL(phoneNumber).then(supported => {
+      if(!supported)
+        alert('Cannot handle');
+      else
+        return Linking.openURL(phoneNumber);
+    }).catch(err => alert(err))
+  }
+
   render(){
     let {params} = this.props.navigation.state;
     let showSpinner = this.state.isLoading ? <Spinner color={GLOBALS.primaryColorDark} />: <Text></Text>
@@ -118,7 +127,23 @@ export default class EventDetails extends React.Component {
         <Label>Name</Label>
         <Text style={styles.info}>{this.state.data.organisers.name}</Text>
         <Label>Contact</Label>
-        <Text style={styles.info}>{this.state.data.organisers.contact}</Text>
+        {this.state.data.organisers.contact.split(',').map(contact => 
+          <View style={styles.row}>
+            <View style={{width: '75%'}}>
+              <Text style={styles.info}>{contact}</Text>
+            </View>
+            <View style={{flex: 1, flexDirection: 'row'}}>
+              <Button transparent title='Call Now'
+                onPress={() => this.callNumber(`tel:+91${contact}`)}>
+                <Icon name="call" style={{fontSize: 22}}/>
+              </Button>
+              <Button transparent title='Send SMS'
+                onPress={() => this.callNumber(`sms:+91${contact}`)}>
+                <Icon name='text' style={{fontSize: 24, marginLeft: 10}} />
+              </Button>
+            </View>
+          </View>
+          )}
         </Body>
       </CardItem>
     
@@ -214,5 +239,10 @@ const styles = StyleSheet.create({
   info: {
     fontSize: 18,
     margin: 10
+  },
+  row: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   }
 })

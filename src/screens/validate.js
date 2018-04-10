@@ -78,6 +78,16 @@ export default class Validate extends React.Component {
             }})
           }
           let data = this.state.data;
+          
+          GLOBALS.socket.emit('record-activity', {
+            type: 'VALIDATE',
+            owner: {
+              id: GLOBALS.userData._id || 'admin',
+              name: GLOBALS.userData.name || 'Admin',
+              participant: this.props.navigation.state.params.participantId,
+              event: this.state.selected
+            }
+          })
           data.splice(data.indexOf(this.state.selected), 1)
           this.setState({data: data}, () => {
             this.setState({selected: ''})

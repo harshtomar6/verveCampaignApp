@@ -2,7 +2,8 @@ import React from 'react';
 import { View, StyleSheet, Dimensions, Image } from 'react-native';
 import { Container, Text, Button, Content, Toast, Spinner} from 'native-base';
 import AppBar from './../Components/header';
-import { TextField } from 'react-native-material-textfield'
+import { TextField } from 'react-native-material-textfield';
+import QRCodeScanner from 'react-native-qrcode-scanner';
 let config = require('./../config');
 let GLOBALS = require('./../globals');
 
@@ -11,6 +12,7 @@ export default class ValidateWrap extends React.Component {
   constructor(){
     super();
     this.toast = null;
+    this.qrCodeScanner = null;
     this.state = {
       participantId: '',
       data: [],
@@ -67,8 +69,10 @@ export default class ValidateWrap extends React.Component {
               participantName: this.state.data.name,
               _id: this.state.data._id,
               eventsRegistered: this.state.data.eventsRegistered.length,
-              eventsAttended: this.state.data.eventsAttended
-            })
+              eventsAttended: this.state.data.eventsAttended,
+              type: this.props.navigation.state.params.type
+            });
+
           })
       })
       .catch(err => {
@@ -91,6 +95,12 @@ export default class ValidateWrap extends React.Component {
     }
   }
 
+  handleScan(e){
+    this.setState({participantId: e.data}, () => {
+      this.handleSubmit();
+    });
+  }
+
   render(){
     let showSpinner = this.state.isLoading ? <Spinner color={GLOBALS.primaryColorDark}/>: <Text></Text>
     return (
@@ -108,6 +118,8 @@ export default class ValidateWrap extends React.Component {
                 tintColor={GLOBALS.primaryColor} 
                 maxLength={11}
               />
+            <QRCodeScanner onRead={this.handleScan.bind(this)} ref={e => this.qrCodeScanner = e}
+            />
             {showSpinner}
           </View>:
           <View style={styles.wrapContainer}>

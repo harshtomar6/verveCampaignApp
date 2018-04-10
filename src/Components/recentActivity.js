@@ -100,6 +100,9 @@ export default class RecentActivity extends React.Component {
       case 'MONEY_COLLECT':
         icon = require('./../dollarIcon2.png');
         break;
+      case 'VALIDATE':
+        icon = require('./../7.png');
+        break;
       default:
         icon = '';
     }
@@ -109,10 +112,13 @@ export default class RecentActivity extends React.Component {
 
   handlePress(volunteerId, volunteerName){
     const { navigate } = this.props.navigation;
-    navigate('volunteerDetails', {
-      volunteerId,
-      volunteerName
-    })
+    if(volunteerId === 'admin'){}
+    
+    else
+      navigate('volunteerDetails', {
+        volunteerId,
+        volunteerName
+      })
   }
 
   render(){

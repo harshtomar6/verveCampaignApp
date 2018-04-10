@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Linking, Dimensions, Image} from 'react-native';
 import {Toast, Spinner, Container, Content, Body, Card, CardItem, Button, Label,
    Text, Icon} from 'native-base';
+import { NavigationActions } from 'react-navigation';
 import AppBar from './../Components/header';
 let GLOBALS = require('./../globals');
 let config = require('./../config');
@@ -95,12 +96,18 @@ export default class ParticipantDetails extends React.Component {
 
   handleValidate(){
     if(!this.state.isLoading){
-      const {navigate} = this.props.navigation;
-      navigate('validate', {
-        participantId: this.state.data.id,
-        eventsRegistered: this.state.data.eventsRegistered,
-        eventsAttended: this.state.data.eventsAttended
-      })
+      const goToValidate = NavigationActions.reset({
+        index:  1,
+        actions: [
+          NavigationActions.navigate({routeName: this.props.navigation.state.params.type === 'admin' ? 'Home': 'Volunteer'}),
+          NavigationActions.navigate({routeName: 'validate', params: {
+            participantId: this.state.data.id,
+            eventsRegistered: this.state.data.eventsRegistered,
+            eventsAttended: this.state.data.eventsAttended
+          }})
+        ]
+      });
+      this.props.navigation.dispatch(goToValidate);
     }
   }
 

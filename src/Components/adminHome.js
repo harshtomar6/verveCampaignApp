@@ -103,6 +103,9 @@ export default class AdminHome extends React.Component {
       case 'MONEY_COLLECT':
         icon = require('./../dollarIcon2.png');
         break;
+      case 'VALIDATE':
+        icon = require('./../7.png');
+        break;
       default:
         icon = '';
     }
@@ -112,16 +115,20 @@ export default class AdminHome extends React.Component {
 
   activityPress(volunteerId, volunteerName, passesSold){
     const { navigate } = this.props.navigation;
-    navigate('volunteerDetails', {
-      volunteerId,
-      volunteerName,
-      passesSold
-    })
+    if(volunteerId == 'admin'){}
+    
+    else
+      navigate('volunteerDetails', {
+        volunteerId,
+        volunteerName
+      })
   }
 
   validate(){
     const { navigate } = this.props.navigation;
-    navigate('validateWrap');
+    navigate('validateWrap', {
+      type: 'admin'
+    });
   }
 
   render(){

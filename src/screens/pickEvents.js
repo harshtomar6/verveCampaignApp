@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ListView, Dimensions } from 'react-native';
+import { View, StyleSheet, ListView, Dimensions, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { Container, Content, Body, Text, Button, Spinner, Toast, CheckBox, 
   Separator, Left, List, ListItem, Right, Footer, Icon } from 'native-base';
 import AppBar from './../Components/header';
@@ -139,6 +139,43 @@ export default class PickEvents extends React.Component {
     }
   }
 
+  handleComboPress(){
+    const { navigate } = this.props.navigation;
+
+    if(!this.state.isLoading)
+      this.setState({
+        selected: [
+          "5ab664c2a8cb34214472add8",
+          "5a8af4cd191fb64044a1fecf",
+          "5a8af4e2191fb64044a1fed0",
+          "5a8af4f4191fb64044a1fed1",
+          "5a8af509191fb64044a1fed2",
+          "5a8af5b3191fb64044a1fed6",
+          "5a8af5c7191fb64044a1fed7",
+          "5a8af5d4191fb64044a1fed8",
+          "5ab66757a8cb34214472adda",
+          "5ab6772ca8cb34214472ade2",
+          "5a8af6db191fb64044a1fee5",
+          "5ab67836a8cb34214472ade5",
+          "5a8af77d191fb64044a1feec",
+          "5ab66834a8cb34214472adde",
+          "5a8af6b7191fb64044a1fee3",
+          "5a8af6ce191fb64044a1fee4"
+        ]
+      }, () => {
+        navigate('reviewSell', {
+          name: this.props.navigation.state.params.name,
+          email: this.props.navigation.state.params.email,
+          phone: this.props.navigation.state.params.phone,
+          college: this.props.navigation.state.params.college,
+          events: this.state.selected,
+          price: 200
+        });
+      })
+    else
+      alert('Tap after events are loaded');
+  }
+
   render(){
     const ds = new ListView.DataSource({
       rowHasChanged: (r1, r2) => r1 !== r2,
@@ -179,8 +216,16 @@ export default class PickEvents extends React.Component {
     return (
       <Container>
         <AppBar title='Pick Events' left='arrow-back' navigation={this.props.navigation} />
-        
+    
         <Content>
+            <View style={{backgroundColor: '#fff', flexDirection: 'row'}}>
+              <TouchableOpacity onPress={() => this.handleComboPress()}>
+                <View style={styles.card}>
+                  <Text style={{color: '#fff', fontSize: 20, fontWeight: '700'}}>SRT COMBO</Text>
+                  <Text style={{color: '#fff'}}>Includes 16 Events</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
           <View style={{flex: 1, backgroundColor: '#fff'}}>
           {showSpinner}
           </View>
@@ -228,5 +273,12 @@ const styles = StyleSheet.create({
   footerTitle: {
     color: '#fff',
     fontSize: 15
+  },
+  card: {
+    borderRadius: 10,
+    backgroundColor: GLOBALS.primaryColor,
+    margin: 10,
+    width: Dimensions.get('window').width/2,
+    padding: 20
   }
 });
