@@ -25,12 +25,17 @@ export default class ReviewSell extends React.Component {
     let arr = []
     let i=0;
     let events = this.props.navigation.state.params.events
-    events.forEach(element => {
-      i++;
-      arr.push(GLOBALS.events.filter(item => item._id == element)[0].name)   
-      if(i == events.length)
-        this.setState({events: arr});   
-    });
+
+    if(events !== 'ARMAN MALIK LIVE CONCERT'){
+      events.forEach(element => {
+        i++;
+        arr.push(GLOBALS.events.filter(item => item._id == element)[0].name)   
+        if(i == events.length)
+          this.setState({events: arr});   
+      });
+    }
+    else
+      this.setState({events: [events]});
   }
 
   handleSubmit(){

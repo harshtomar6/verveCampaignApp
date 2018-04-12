@@ -97,18 +97,18 @@ export default class PickEvents extends React.Component {
     })
   }
 
-  handleCheck(_id){
+  handleCheck(_id, ticket){
     let selected = this.state.selected;
     let price = this.state.totalPrice;
     let data = this.state.data;
 
     if(selected.includes(_id)){
       selected.splice(selected.indexOf(_id), 1)
-      price -= data[data.findIndex(id => id._id == _id)].ticket
+      price -= ticket
     }
     else{
       selected.push(_id)
-      price += data[data.findIndex(id => id._id == _id)].ticket
+      price += ticket
     }
 
     
@@ -142,38 +142,48 @@ export default class PickEvents extends React.Component {
   handleComboPress(){
     const { navigate } = this.props.navigation;
 
+    let selected = [
+      "5ab664c2a8cb34214472add8",
+      "5a8af4cd191fb64044a1fecf",
+      "5a8af4e2191fb64044a1fed0",
+      "5a8af4f4191fb64044a1fed1",
+      "5a8af509191fb64044a1fed2",
+      "5a8af5b3191fb64044a1fed6",
+      "5a8af5c7191fb64044a1fed7",
+      "5a8af5d4191fb64044a1fed8",
+      "5ab66757a8cb34214472adda",
+      "5ab6772ca8cb34214472ade2",
+      "5a8af6db191fb64044a1fee5",
+      "5ab67836a8cb34214472ade5",
+      "5a8af77d191fb64044a1feec",
+      "5ab66834a8cb34214472adde",
+      "5a8af6b7191fb64044a1fee3",
+      "5a8af6ce191fb64044a1fee4"
+    ]
     if(!this.state.isLoading)
-      this.setState({
-        selected: [
-          "5ab664c2a8cb34214472add8",
-          "5a8af4cd191fb64044a1fecf",
-          "5a8af4e2191fb64044a1fed0",
-          "5a8af4f4191fb64044a1fed1",
-          "5a8af509191fb64044a1fed2",
-          "5a8af5b3191fb64044a1fed6",
-          "5a8af5c7191fb64044a1fed7",
-          "5a8af5d4191fb64044a1fed8",
-          "5ab66757a8cb34214472adda",
-          "5ab6772ca8cb34214472ade2",
-          "5a8af6db191fb64044a1fee5",
-          "5ab67836a8cb34214472ade5",
-          "5a8af77d191fb64044a1feec",
-          "5ab66834a8cb34214472adde",
-          "5a8af6b7191fb64044a1fee3",
-          "5a8af6ce191fb64044a1fee4"
-        ]
-      }, () => {
-        navigate('reviewSell', {
-          name: this.props.navigation.state.params.name,
-          email: this.props.navigation.state.params.email,
-          phone: this.props.navigation.state.params.phone,
-          college: this.props.navigation.state.params.college,
-          events: this.state.selected,
-          price: 200
-        });
-      })
+      navigate('reviewSell', {
+        name: this.props.navigation.state.params.name,
+        email: this.props.navigation.state.params.email,
+        phone: this.props.navigation.state.params.phone,
+        college: this.props.navigation.state.params.college,
+        events: selected,
+        price: 200
+      });
     else
       alert('Tap after events are loaded');
+  }
+
+  handleConcertPress(){
+    let { navigate } = this.props.navigation;
+
+    navigate('reviewSell', {
+      name: this.props.navigation.state.params.name,
+      email: this.props.navigation.state.params.email,
+      phone: this.props.navigation.state.params.phone,
+      college: this.props.navigation.state.params.college,
+      events: 'ARMAN MALIK LIVE CONCERT',
+      price: 250
+    })
   }
 
   render(){
@@ -186,11 +196,11 @@ export default class PickEvents extends React.Component {
       <ListView
         dataSource={ds.cloneWithRowsAndSections(this.state.category)}
         renderRow={
-        (item) => <ListItem avatar button onPress={() => {this.handleCheck(item._id)}}>
+        (item) => <ListItem avatar button onPress={() => {this.handleCheck(item._id, item.ticket)}}>
                       <Left style={{marginRight: 20, marginLeft: -10}}>
                         <CheckBox color={GLOBALS.primaryColor} 
                           checked={this.state.selected.includes(item._id) ? true : false}
-                          onPress={() => this.handleCheck(item._id)}/>
+                          onPress={() => this.handleCheck(item._id, item.ticket)}/>
                       </Left>
                       <Body style={{marginLeft: 10}}>
                         <Text>{item.name}</Text>
@@ -218,14 +228,23 @@ export default class PickEvents extends React.Component {
         <AppBar title='Pick Events' left='arrow-back' navigation={this.props.navigation} />
     
         <Content>
+          <ScrollView horizontal>
             <View style={{backgroundColor: '#fff', flexDirection: 'row'}}>
-              <TouchableOpacity onPress={() => this.handleComboPress()}>
+              <TouchableOpacity onPress={() => this.handleComboPress()} activeOpacity={0.7}>
                 <View style={styles.card}>
                   <Text style={{color: '#fff', fontSize: 20, fontWeight: '700'}}>SRT COMBO</Text>
-                  <Text style={{color: '#fff'}}>Includes 16 Events</Text>
+                  <Text style={{color: '#fff'}}>16 Events &#8377; 200</Text>
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={() => this.handleConcertPress()} activeOpacity={0.7}>
+                <View style={styles.card}>
+                  <Text style={{color: '#fff', fontSize: 20, fontWeight: '700'}}>CONCERT</Text>
+                  <Text style={{color: '#fff'}}>&#8377;&nbsp;&nbsp;250</Text>
                 </View>
               </TouchableOpacity>
             </View>
+          </ScrollView>
           <View style={{flex: 1, backgroundColor: '#fff'}}>
           {showSpinner}
           </View>
